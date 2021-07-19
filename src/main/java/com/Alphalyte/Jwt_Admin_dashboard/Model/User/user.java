@@ -1,15 +1,20 @@
 package com.Alphalyte.Jwt_Admin_dashboard.Model.User;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Getter
@@ -19,10 +24,19 @@ import java.util.Collection;
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class user implements UserDetails {
 
+    @Autowired
+    UserGroupMaster userGroupMaster;
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private int usercode;
-    private String groupname;
+
+//    @OneToOne(fetch = FetchType.LAZY,targetEntity = UserGroupMaster.class)
+//    @JoinColumn(name = "group_name", referencedColumnName = "group_name")
+//    @JsonBackReference
+//    @MapsId
+    @OneToOne(/*cascade = CascadeType.REFRESH,*/fetch = FetchType.LAZY,mappedBy = "groupname")
+    private UserGroupMaster group_name;
+
     private String username;
     private String password;
     private LocalDateTime createdat;
@@ -34,10 +48,10 @@ public class user implements UserDetails {
     @Column(unique = true)
     private long phoneNumber;
 
-    public user(String groupname, String username, String password,
+    public user(UserGroupMaster groupname, String username, String password,
                 LocalDateTime createdat, String createdBY,
                 String localaddress, Boolean isactive, String email, long phoneNumber) {
-        this.groupname = groupname;
+        this.group_name = groupname;
         this.username = username;
         this.password = password;
         this.createdat = createdat;

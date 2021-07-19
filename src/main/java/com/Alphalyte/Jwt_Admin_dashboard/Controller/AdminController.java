@@ -1,6 +1,8 @@
 package com.Alphalyte.Jwt_Admin_dashboard.Controller;
 
+import com.Alphalyte.Jwt_Admin_dashboard.Model.User.UserGroupMaster;
 import com.Alphalyte.Jwt_Admin_dashboard.Model.User.user;
+import com.Alphalyte.Jwt_Admin_dashboard.Reposoritries.UserGroupMasterRepo;
 import com.Alphalyte.Jwt_Admin_dashboard.Reposoritries.UserReposoritries;
 import com.Alphalyte.Jwt_Admin_dashboard.security.Service.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +17,11 @@ public class AdminController {
     UserServiceImpl userDetails;
 
     @Autowired
-    private UserReposoritries userRepo;
+    UserReposoritries userRepo;
 
+    @Autowired
+    UserGroupMasterRepo userGroupMasterRepo;
+/*--------------------------------------uSERmASTER------------------------------------------*/
     //Get all users
     @GetMapping(path = "/users")
     public List<user> users(){
@@ -47,6 +52,12 @@ public class AdminController {
     public user updateUser(@RequestBody user u){
         userDetails.UpdateUser(u.getUsercode(),u);
         return u;
+    }
+
+/*--------------------------------uSERgROUPmASTER---------------------------------------------*/
+    @PostMapping("/usergroup")
+    public void addgroup(@RequestBody UserGroupMaster userGroupMaster){
+        userGroupMasterRepo.save(userGroupMaster);
     }
 
 
