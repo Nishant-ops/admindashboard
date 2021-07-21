@@ -10,6 +10,7 @@ import lombok.ToString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -24,42 +25,42 @@ import java.util.List;
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class user implements UserDetails {
 
-    @Autowired
-    UserGroupMaster userGroupMaster;
+//    @Autowired
+//    UserGroupMaster userGroupMaster;
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private int usercode;
 
-//    @OneToOne(fetch = FetchType.LAZY,targetEntity = UserGroupMaster.class)
-//    @JoinColumn(name = "group_name", referencedColumnName = "group_name")
-//    @JsonBackReference
-//    @MapsId
-    @OneToOne(/*cascade = CascadeType.REFRESH,*/fetch = FetchType.LAZY,mappedBy = "groupname")
-    private UserGroupMaster group_name;
+    private String group_name;
 
     private String username;
     private String password;
     private LocalDateTime createdat;
     private String createdBY;
     private String localaddress;
-    private Boolean isactive;
+//    private Boolean isactive = userGroupMaster.isActive();
     @Column(unique = true)
     private String email;
     @Column(unique = true)
     private long phoneNumber;
 
-    public user(UserGroupMaster groupname, String username, String password,
+    public user(String groupname, String username, String password,
                 LocalDateTime createdat, String createdBY,
-                String localaddress, Boolean isactive, String email, long phoneNumber) {
+                String localaddress/*, Boolean isactive*/, String email, long phoneNumber) {
         this.group_name = groupname;
         this.username = username;
         this.password = password;
         this.createdat = createdat;
         this.createdBY = createdBY;
         this.localaddress = localaddress;
-        this.isactive = isactive;
+//        this.isactive = isactive;
         this.email = email;
         this.phoneNumber = phoneNumber;
+    }
+
+    public void setPassword(String password) {
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+        this.password = bCryptPasswordEncoder.encode(password);
     }
 
     @Override
@@ -94,7 +95,7 @@ public class user implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return this.isactive;
+        return true;
     }
     
     

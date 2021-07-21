@@ -1,38 +1,34 @@
 package com.Alphalyte.Jwt_Admin_dashboard.Model.User;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
-
+import lombok.*;
 import javax.persistence.*;
-import java.util.List;
+import java.time.LocalDateTime;
 
+@Data
+@NoArgsConstructor
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor
-@Table(name = "Group_Master")
 public class UserGroupMaster {
-    @Autowired
-    user user;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-
-//    @Column(name = "group_name")
-    @OneToOne(mappedBy = "user_groupname")
+    @GeneratedValue
+    private int gid;
     private String groupname;
+    private boolean active;
+    private LocalDateTime createdat;
+    private String createdby;
+    private LocalDateTime modifiedat;
+    private String modifiedby;
 
-//    @JsonManagedReference
-//    @OneToOne(mappedBy = "groupname", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-
-
-    UserGroupMaster(String groupname){
+    public UserGroupMaster(String groupname, boolean active, String createdby,
+                           LocalDateTime modifiedat, String modifiedby) {
         this.groupname = groupname;
+        this.active = active;
+        this.createdat = LocalDateTime.now();
+        this.createdby = createdby;
+        this.modifiedat = modifiedat;
+        this.modifiedby = modifiedby;
     }
+
 }

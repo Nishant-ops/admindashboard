@@ -1,13 +1,18 @@
 package com.Alphalyte.Jwt_Admin_dashboard.Controller;
 
+import com.Alphalyte.Jwt_Admin_dashboard.payload.Request.ChangePass;
+import com.Alphalyte.Jwt_Admin_dashboard.payload.Request.ResetPass;
 import com.Alphalyte.Jwt_Admin_dashboard.Model.User.UserGroupMaster;
 import com.Alphalyte.Jwt_Admin_dashboard.Model.User.user;
 import com.Alphalyte.Jwt_Admin_dashboard.Reposoritries.UserGroupMasterRepo;
 import com.Alphalyte.Jwt_Admin_dashboard.Reposoritries.UserReposoritries;
 import com.Alphalyte.Jwt_Admin_dashboard.security.Service.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -21,6 +26,8 @@ public class AdminController {
 
     @Autowired
     UserGroupMasterRepo userGroupMasterRepo;
+
+
 /*--------------------------------------uSERmASTER------------------------------------------*/
     //Get all users
     @GetMapping(path = "/users")
@@ -55,10 +62,46 @@ public class AdminController {
     }
 
 /*--------------------------------uSERgROUPmASTER---------------------------------------------*/
+
+
+    @GetMapping("/usergroup")
+    public List<UserGroupMaster> getallgroups(){
+        return userGroupMasterRepo.findAll();
+    }
+
     @PostMapping("/usergroup")
     public void addgroup(@RequestBody UserGroupMaster userGroupMaster){
+        userGroupMaster.setCreatedat(LocalDateTime.now());
         userGroupMasterRepo.save(userGroupMaster);
     }
 
+
+
+/*--------------------------------cHANGEpASSWORD----------------------------------------------*/
+
+    @PutMapping("/changepass")
+    public ResponseEntity<?> ChangePass(@RequestBody ChangePass changePass){
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+        user dbuser = userRepo.getById(changePass.getUsercode());
+        boolean match = bCryptPasswordEncoder.matches(changePass.getOldpass(), dbuser.getPassword());
+        if (match){
+            dbuser.setPassword(changePass.getNewpass());
+            userRepo.save(dbuser);
+            return ResponseEntity.ok("Password changed!");
+        }
+        return ResponseEntity.ok("Old Password not matched");
+    }
+/*---------------------------------rESETpASSWORD----------------------------------------------*/
+
+    @PutMapping("/resetpass")
+    public ResponseEntity<?> ResetPass(@RequestBody ResetPass resetPass){
+         boolean exists = userRepo.existsById(resetPass.getUsercode());
+         if (exists){
+             user dbuser = userRepo.getById(resetPass.getUsercode());
+             dbuser.setPassword(resetPass.getNewpass());
+             userRepo.save(dbuser);
+             return ResponseEntity.ok("PASSWORD RESET SUCCESSFULL!");
+         }else return ResponseEntity.ok("Invalid user code.");
+    }
 
 }

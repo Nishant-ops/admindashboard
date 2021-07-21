@@ -1,4 +1,4 @@
-package com.Alphalyte.Jwt_Admin_dashboard.Controller;
+package com.Alphalyte.Jwt_Admin_dashboard.payload.Request;
 
 import javax.servlet.http.HttpServletRequest;
 import java.net.InetAddress;

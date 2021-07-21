@@ -20,8 +20,6 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private final UserReposoritries userRepo;
 
-//    @Autowired
-//    BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Bean
     public PasswordEncoder passencoder(){

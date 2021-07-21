@@ -3,6 +3,7 @@ package com.Alphalyte.Jwt_Admin_dashboard.Controller;
 import com.Alphalyte.Jwt_Admin_dashboard.Model.User.User_Ip;
 import com.Alphalyte.Jwt_Admin_dashboard.Model.User.user;
 import com.Alphalyte.Jwt_Admin_dashboard.Reposoritries.Ip_repository;
+import com.Alphalyte.Jwt_Admin_dashboard.payload.Request.IPUtil;
 import com.Alphalyte.Jwt_Admin_dashboard.payload.Request.loginRequest;
 import com.Alphalyte.Jwt_Admin_dashboard.payload.Response.JwtResponse;
 import com.Alphalyte.Jwt_Admin_dashboard.security.jwt.JwtUsernameandPasswordAuthenticationFilter;
@@ -52,7 +53,7 @@ public class LoginController {
         ip_repository.save(user_ip);
 
         return ResponseEntity.ok(new JwtResponse(
-                token, userDetails.getUsercode(), userDetails.getUsername(), userDetails.getEmail(),
+                token, userDetails.getUsercode(),userDetails.getUsername(), userDetails.getEmail(),
                 list
         ));
     }
