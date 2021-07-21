@@ -2,7 +2,7 @@ package com.Alphalyte.Jwt_Admin_dashboard.Controller;
 
 import com.Alphalyte.Jwt_Admin_dashboard.Model.User.User_Ip;
 import com.Alphalyte.Jwt_Admin_dashboard.Model.User.user;
-import com.Alphalyte.Jwt_Admin_dashboard.Reposoritries.Ip_repository;
+import com.Alphalyte.Jwt_Admin_dashboard.Reposoritries.User.Ip_repository;
 import com.Alphalyte.Jwt_Admin_dashboard.payload.Request.IPUtil;
 import com.Alphalyte.Jwt_Admin_dashboard.payload.Request.loginRequest;
 import com.Alphalyte.Jwt_Admin_dashboard.payload.Response.JwtResponse;
