@@ -1,4 +1,4 @@
-package com.Alphalyte.Jwt_Admin_dashboard.security.Service;
+package com.Alphalyte.Jwt_Admin_dashboard.Service;
 
 import com.Alphalyte.Jwt_Admin_dashboard.Model.User.user;
 import com.Alphalyte.Jwt_Admin_dashboard.Reposoritries.User.UserReposoritries;

@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
@@ -32,31 +33,20 @@ public class user implements UserDetails {
     private int usercode;
 
     private String group_name;
-
     private String username;
     private String password;
+    private LocalDate DateOfJoining;
     private LocalDateTime createdat;
     private String createdBY;
     private String localaddress;
-//    private Boolean isactive = userGroupMaster.isActive();
+    private String permanentAddress;
+    private String branch;
     @Column(unique = true)
     private String email;
     @Column(unique = true)
     private long phoneNumber;
 
-    public user(String groupname, String username, String password,
-                LocalDateTime createdat, String createdBY,
-                String localaddress/*, Boolean isactive*/, String email, long phoneNumber) {
-        this.group_name = groupname;
-        this.username = username;
-        this.password = password;
-        this.createdat = createdat;
-        this.createdBY = createdBY;
-        this.localaddress = localaddress;
-//        this.isactive = isactive;
-        this.email = email;
-        this.phoneNumber = phoneNumber;
-    }
+
 
     public void setPassword(String password) {
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();

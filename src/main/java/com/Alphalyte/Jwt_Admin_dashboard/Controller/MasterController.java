@@ -177,6 +177,22 @@ public class MasterController {
         return subjectMaster;
     }
 
+    @PutMapping("/SubjectMaster")
+    public ResponseEntity<?> updateSubjectMaster(@RequestBody SubjectMaster subjectMaster){
+        boolean exist = subjectMasterRepo.existsById(subjectMaster.getId());
+        if (exist){
+            SubjectMaster dbuser = subjectMasterRepo.getById(subjectMaster.getId());
+//            subjectMaster.setId(subjectMaster.getId());
+            dbuser.setSubjectName(subjectMaster.getSubjectName());
+            dbuser.setSubjectAbb(subjectMaster.getSubjectAbb());
+            dbuser.setModifiedBy(subjectMaster.getModifiedBy());
+            dbuser.setModifiedAt(LocalDateTime.now());
+            subjectMasterRepo.save(dbuser);
+            return ResponseEntity.ok("modified");
+        }
+        return ResponseEntity.ok("failed");
+    }
+
     @DeleteMapping("/SubjectMaster/{id}")
     public void DeleteSubjectMaster(@PathVariable int id)
     {

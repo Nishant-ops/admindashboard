@@ -21,14 +21,12 @@ public class UserGroupMaster {
     private LocalDateTime modifiedat;
     private String modifiedby;
 
-    public UserGroupMaster(String groupname, boolean active, String createdby,
-                           LocalDateTime modifiedat, String modifiedby) {
+    public UserGroupMaster(String groupname, boolean active, String createdby) {
         this.groupname = groupname;
         this.active = active;
-        this.createdat = LocalDateTime.now();
         this.createdby = createdby;
-        this.modifiedat = modifiedat;
-        this.modifiedby = modifiedby;
+        this.modifiedby = null;
     }
+
 
 }

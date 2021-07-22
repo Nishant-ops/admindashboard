@@ -6,7 +6,7 @@ import com.Alphalyte.Jwt_Admin_dashboard.Model.User.UserGroupMaster;
 import com.Alphalyte.Jwt_Admin_dashboard.Model.User.user;
 import com.Alphalyte.Jwt_Admin_dashboard.Reposoritries.User.UserGroupMasterRepo;
 import com.Alphalyte.Jwt_Admin_dashboard.Reposoritries.User.UserReposoritries;
-import com.Alphalyte.Jwt_Admin_dashboard.security.Service.UserServiceImpl;
+import com.Alphalyte.Jwt_Admin_dashboard.Service.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -73,6 +73,14 @@ public class AdminController {
     public void addgroup(@RequestBody UserGroupMaster userGroupMaster){
         userGroupMaster.setCreatedat(LocalDateTime.now());
         userGroupMasterRepo.save(userGroupMaster);
+    }
+
+    @PutMapping(path = {"/usergroup"})
+    public UserGroupMaster updateUser(@RequestBody UserGroupMaster userGroupMaster){
+        userGroupMaster.setGid(userGroupMaster.getGid());
+        userGroupMaster.setModifiedat(LocalDateTime.now());
+        userGroupMasterRepo.save(userGroupMaster);
+        return userGroupMaster;
     }
 
 
