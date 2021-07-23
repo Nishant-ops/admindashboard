@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.annotation.Nullable;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -27,11 +26,12 @@ public class BoardMaster {
     private LocalDateTime ModifiedAt;
 
     public BoardMaster(String boardName, String boardAbb, String createdBy,
-                       String modifiedBy, LocalDateTime modifiedAt) {
-        this.BoardName = boardName;
-        this.BoardAbb = boardAbb;
-        this.CreatedBy = createdBy;
-        this.ModifiedBy = modifiedBy;
-        this.ModifiedAt = modifiedAt;
+                       LocalDateTime createdAt, String modifiedBy, LocalDateTime modifiedAt) {
+        BoardName = boardName;
+        BoardAbb = boardAbb;
+        CreatedBy = createdBy;
+        CreatedAt = createdAt;
+        ModifiedBy = modifiedBy;
+        ModifiedAt = modifiedAt;
     }
 }

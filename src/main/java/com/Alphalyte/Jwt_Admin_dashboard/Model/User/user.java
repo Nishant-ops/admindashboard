@@ -1,5 +1,7 @@
 package com.Alphalyte.Jwt_Admin_dashboard.Model.User;
 
+import com.Alphalyte.Jwt_Admin_dashboard.Reposoritries.User.UserReposoritries;
+import com.Alphalyte.Jwt_Admin_dashboard.Service.UserServiceImpl;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -11,46 +13,61 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
 @Entity
-@Getter
-@Setter
 @NoArgsConstructor
 @Table(name = "user_master")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@Getter
+@Setter
 public class user implements UserDetails {
 
-//    @Autowired
-//    UserGroupMaster userGroupMaster;
+
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int usercode;
 
-    private String group_name;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinTable(name = "usermastergroup", joinColumns = @JoinColumn(name = "usercode")
+    ,inverseJoinColumns = @JoinColumn(name = "group_id"))
+    private UserGroupMaster group_name;
+
+
     private String username;
     private String password;
+
     private LocalDate DateOfJoining;
-    private LocalDateTime createdat;
-    private String createdBY;
     private String localaddress;
     private String permanentAddress;
     private String branch;
-    @Column(unique = true)
+
+    private LocalDateTime createdat;
+    private String createdBY;
+
+    @Column(unique = true,nullable = false)
     private String email;
-    @Column(unique = true)
+    @Column(unique = true,nullable = false)
     private long phoneNumber;
+    @Lob
+    private Byte[] image;
 
-
-
-    public void setPassword(String password) {
+    public user(UserGroupMaster group_name, String username, String password, String email, long phoneNumber) {
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+        this.group_name = group_name;
+        this.username = username;
         this.password = bCryptPasswordEncoder.encode(password);
+        this.email = email;
+        this.phoneNumber = phoneNumber;
     }
 
     @Override
@@ -85,7 +102,7 @@ public class user implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return group_name.isActive();
     }
     
     

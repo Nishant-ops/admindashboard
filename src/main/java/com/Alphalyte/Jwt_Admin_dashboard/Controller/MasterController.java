@@ -51,8 +51,12 @@ public class MasterController {
     public ResponseEntity<?> updateBoard(@RequestBody BoardMaster boardMaster){
         boolean exist = boardMasterRepo.existsById(boardMaster.getId());
         if (exist){
-            boardMaster.setId(boardMaster.getId());
-            boardMasterRepo.save(boardMaster);
+            BoardMaster dbuser = boardMasterRepo.getById(boardMaster.getId());
+            dbuser.setModifiedAt(LocalDateTime.now());
+            dbuser.setModifiedBy(boardMaster.getModifiedBy());
+            dbuser.setBoardAbb(boardMaster.getBoardAbb());
+            dbuser.setBoardName(boardMaster.getBoardName());
+            boardMasterRepo.save(dbuser);
             return ResponseEntity.ok("Board Updated");
         }
         return ResponseEntity.ok("Failed to update");
