@@ -37,6 +37,7 @@ public class UserServiceImpl implements UserService {
         return userRepo.findAll();
     }
 
+
     @Override
     @Transactional
     public user UpdateUser(int usercode, user user) {
@@ -68,6 +69,8 @@ public class UserServiceImpl implements UserService {
         return u;
     }
 
+
+
 //    public void setImage(Integer id, MultipartFile file) {
 //        try {
 ////            user dbuser = userRepo.findById(id).get();
@@ -82,21 +85,22 @@ public class UserServiceImpl implements UserService {
 //            System.out.println("error " + e);;
 //        }
 //    }
-//
-//public Byte[] renderImageFromDb(Integer id, HttpServletResponse response) throws IOException{
-//        user dbuser = userRepo.findById(id).get();
-//
-//        byte[] byteArray = new byte[dbuser.getImage().length];
-//
-//        int i = 0;
-//
-//    for (Byte wrappedByte: dbuser.getImage()) {
-//        byteArray[i++] = wrappedByte;
-//    }
-//    response.setContentType("image/jpeg");
-//    InputStream is = new ByteArrayInputStream(byteArray);
-//    IOUtils.copy(is, response.getOutputStream());
-//    return new Byte[0];
-//}
+
+
+public Byte[] renderImageFromDb(Integer id, HttpServletResponse response) throws IOException{
+        user dbuser = userRepo.findById(id).get();
+
+        byte[] byteArray = new byte[dbuser.getImage().length];
+
+        int i = 0;
+
+    for (Byte wrappedByte: dbuser.getImage()) {
+        byteArray[i++] = wrappedByte;
+    }
+    response.setContentType("image/jpeg");
+    InputStream is = new ByteArrayInputStream(byteArray);
+    IOUtils.copy(is, response.getOutputStream());
+    return new Byte[0];
+}
 
 }

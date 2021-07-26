@@ -1,9 +1,7 @@
 package com.Alphalyte.Jwt_Admin_dashboard.Model.User;
 
-import com.Alphalyte.Jwt_Admin_dashboard.Reposoritries.User.UserReposoritries;
+
 import com.Alphalyte.Jwt_Admin_dashboard.Service.UserServiceImpl;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
 import javax.servlet.http.HttpServletResponse;
@@ -21,7 +18,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.List;
+
 
 @Entity
 @NoArgsConstructor
@@ -29,17 +26,18 @@ import java.util.List;
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Getter
 @Setter
+@ToString
 public class user implements UserDetails {
-
+    @Autowired
+    @Transient
+    UserServiceImpl userService;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int usercode;
 
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinTable(name = "usermastergroup", joinColumns = @JoinColumn(name = "usercode")
-    ,inverseJoinColumns = @JoinColumn(name = "group_id"))
+    @OneToOne(cascade = CascadeType.MERGE)
     private UserGroupMaster group_name;
 
 
@@ -59,15 +57,24 @@ public class user implements UserDetails {
     @Column(unique = true,nullable = false)
     private long phoneNumber;
     @Lob
-    private Byte[] image;
+    private byte[] image;
 
-    public user(UserGroupMaster group_name, String username, String password, String email, long phoneNumber) {
+    public Byte[] getImage(int usercode, HttpServletResponse response) throws IOException {
+        Byte[] image = userService.renderImageFromDb(usercode,response);
+        return image;
+    }
+
+    public void setPassword(String password) {
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-        this.group_name = group_name;
-        this.username = username;
         this.password = bCryptPasswordEncoder.encode(password);
-        this.email = email;
-        this.phoneNumber = phoneNumber;
+    }
+
+    public UserGroupMaster getGroup_name() {
+        return group_name;
+    }
+
+    public void setGroup_name(UserGroupMaster group_name) {
+        this.group_name = group_name;
     }
 
     @Override

@@ -7,21 +7,16 @@ import com.Alphalyte.Jwt_Admin_dashboard.Model.User.user;
 import com.Alphalyte.Jwt_Admin_dashboard.Reposoritries.User.UserGroupMasterRepo;
 import com.Alphalyte.Jwt_Admin_dashboard.Reposoritries.User.UserReposoritries;
 import com.Alphalyte.Jwt_Admin_dashboard.Service.UserServiceImpl;
+import com.Alphalyte.Jwt_Admin_dashboard.payload.Request.UserResquest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.nio.file.Paths;
-import java.time.LocalDate;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -36,8 +31,6 @@ public class AdminController {
     @Autowired
     UserGroupMasterRepo userGroupMasterRepo;
 
-    private String uploadFolder = "C:\\Users\\hp\\Desktop\\images";
-
 /*--------------------------------------uSERmASTER------------------------------------------*/
     //Get all users
     @GetMapping(path = "/users")
@@ -45,73 +38,91 @@ public class AdminController {
         return userDetails.getAllUsers();
     }
 
+    @GetMapping("/usertest/{usercode}")
+    public Byte[] renderImageFromDb(@PathVariable("usercode") int usercode, HttpServletResponse response) throws IOException {
+        return userDetails.renderImageFromDb(usercode,response);
+    }
+
     //Delete user by userID
     @DeleteMapping(path = "/users/{usercode}")
     public void deleteUser(@PathVariable("usercode") int usercode){
+//        userDetails.DeleteRelation(usercode);
         userDetails.deleteById(usercode);
     }
 
     //ADD a new user
     @PostMapping(path = {"/users"})
-    public user addUser(@RequestBody user u){
-
-        u.setCreatedat(LocalDateTime.now());
-        userDetails.AddUser(u);
-        return u;
+    public ResponseEntity<?> addUser(@RequestPart("user") UserResquest userResquest, @RequestPart("file") MultipartFile file) throws IOException{
+      user user = new user();
+      user.setUsername(userResquest.getUsername());
+      user.setPassword(userResquest.getPassword());
+      user.setGroup_name(userGroupMasterRepo.getById(userResquest.getGroupcode()));
+      user.setEmail(userResquest.getEmail());
+      user.setPhoneNumber(userResquest.getPhone());
+      user.setLocaladdress(userResquest.getLocaladdress());
+      user.setPermanentAddress(userResquest.getPermanentAddress());
+      user.setBranch(userResquest.getBranch());
+      user.setCreatedBY(userResquest.getCreatedBy());
+      user.setCreatedat(LocalDateTime.now());
+      user.setDateOfJoining(userResquest.getDateOfJoining());
+      byte[] image = file.getBytes();
+      user.setImage(image);
+      userRepo.save(user);
+      return ResponseEntity.ok("User added");
     }
+
     /*--------------------------------------------------TEST-----------------------------------------------*/
-//    @PostMapping(path = {"/users"})
-    public @ResponseBody ResponseEntity<?> createUser(@RequestParam("groupname") UserGroupMaster groupname, @RequestParam("username") String username,@RequestParam("password") String password, @RequestParam("phoneNumber") long phoneNumber,
-                                                      @RequestParam("dateofjoining") LocalDate dateofjoining,@RequestParam("localAddress") String localaddress,
+
+
+    /*@RequestMapping(value="/upload", method=RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Object> uploadFile(@RequestParam(required=true, value="file") MultipartFile file,
+                                             @RequestParam(required=true, value="username")String username,
+                                             @RequestParam(required = false, value = "password")String password) throws IOException  {
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        byte[] image = file.getBytes();
+        File convertFile = new File("C://Users//hp//Desktop//images//"+file.getOriginalFilename());
+        convertFile.createNewFile();
+        FileOutputStream fout = new FileOutputStream(convertFile);
+        fout.write(image);
+        fout.close();
+
+
+        return new ResponseEntity<>("File is uploaded successfully", HttpStatus.OK);
+
+    }*/
+
+
+    /*@PostMapping(path = {"/test"})
+    public @ResponseBody ResponseEntity<?> createUser(@RequestBody UserResquest u,@RequestParam("image") MultipartFile image, HttpServletRequest request),@RequestBody user u,@RequestParam("image") MultipartFile file, HttpServletRequest request)@RequestParam("groupname") UserGroupMaster groupname, @RequestParam("username") String username,
+                                                      @RequestParam("password") String password,
+                                                      @RequestParam("phoneNumber") long phoneNumber,@RequestParam("dateofjoining") LocalDate dateofjoining
+                                                      @RequestParam("localAddress") String localaddress,
                                                       @RequestParam("permanentAddress") String permanentaddress,@RequestParam("branch") String branch,
-                                                      @RequestParam("createdBy") String createdby, HttpServletRequest request,final @RequestParam("image") MultipartFile file) {
+                                                      @RequestParam("createdBy") String createdby, HttpServletRequest request,
+                                                      final @RequestParam("image") MultipartFile file) {
         try {
-            //String uploadDirectory = System.getProperty("user.dir") + uploadFolder;
-            String uploadDirectory = request.getServletContext().getRealPath(uploadFolder);
-            System.out.println("uploadDirectory:: " + uploadDirectory);
-            String fileName = file.getOriginalFilename();
-            String filePath = Paths.get(uploadDirectory, fileName).toString();
-            System.out.println("FileName: " + file.getOriginalFilename());
+            MultipartFile file = image;
             if (fileName == null || fileName.contains("..")) {
                 return new ResponseEntity<>("Sorry! Filename contains invalid path sequence " + fileName, HttpStatus.BAD_REQUEST);
             }
-            try {
-                File dir = new File(uploadDirectory);
-                if (!dir.exists()) {
-                    System.out.println("Folder Created");
-                    dir.mkdirs();
-                }
-                // Save the file locally
-                BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(new File(filePath)));
-                stream.write(file.getBytes());
-                stream.close();
-            } catch (Exception e) {
+           catch (Exception e) {
                 System.out.println("in catch");
                 e.printStackTrace();
             }
             byte[] imageData = file.getBytes();
-            user user = new user();
-            BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-            user.setUsername(username);
-            user.setGroup_name(groupname);
-            user.setPassword(bCryptPasswordEncoder.encode(password));
-            user.setCreatedat(LocalDateTime.now());
-            user.setCreatedBY(createdby);
-            user.setDateOfJoining(dateofjoining);
-            user.setLocaladdress(localaddress);
-            user.setPermanentAddress(permanentaddress);
-            user.setBranch(branch);
-            user.setPhoneNumber(phoneNumber);
             System.out.println("HttpStatus===" + new ResponseEntity<>(HttpStatus.OK));
-            return new ResponseEntity<>("Product Saved With File - " + fileName, HttpStatus.OK);
+            return new ResponseEntity<>("Product Saved With File - " , HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Exception: " + e);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-    }
+    }*/
     /*--------------------------------------------------TEST-----------------------------------------------*/
-    //Get user by usercode
+
+
+//  Get user by usercode
     @GetMapping(path = "/users/{usercode}")
     public user getUserById(@PathVariable("usercode") int usercode){
         return userDetails.getUserById(usercode);
@@ -132,6 +143,11 @@ public class AdminController {
         return userGroupMasterRepo.findAll();
     }
 
+    @GetMapping("/usergroup/{gid}")
+    public UserGroupMaster getById(@PathVariable int gid){
+        return userGroupMasterRepo.findById(gid).get();
+    }
+
     @PostMapping("/usergroup")
     public void addgroup(@RequestBody UserGroupMaster userGroupMaster){
         userGroupMaster.setCreatedat(LocalDateTime.now());
@@ -140,10 +156,6 @@ public class AdminController {
 
     @PutMapping(path = {"/usergroup"})
     public ResponseEntity<UserGroupMaster> updateUser(@RequestBody UserGroupMaster userGroupMaster){
-//        userGroupMaster.setGid(userGroupMaster.getGid());
-//        userGroupMaster.setUsers();
-//        userGroupMaster.setModifiedat(LocalDateTime.now());
-//        userGroupMasterRepo.save(userGroupMaster);
         boolean exist = userGroupMasterRepo.existsById(userGroupMaster.getGid());
         if (exist){
             UserGroupMaster dbuser = userGroupMasterRepo.getById(userGroupMaster.getGid());

@@ -1,6 +1,7 @@
 package com.Alphalyte.Jwt_Admin_dashboard.Service;
 
 import com.Alphalyte.Jwt_Admin_dashboard.Model.User.user;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
