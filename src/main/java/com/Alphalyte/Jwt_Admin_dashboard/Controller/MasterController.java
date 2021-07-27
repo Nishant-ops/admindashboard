@@ -85,6 +85,20 @@ public class MasterController {
        classGroupMasterRepo.deleteById(id);
    }
 
+   @PutMapping("/ClassGroupMaster")
+   public ResponseEntity<?> updateClassGroup(@RequestBody ClassGroupMaster classGroupMaster){
+       boolean exist = classGroupMasterRepo.existsById(classGroupMaster.getId());
+       if (exist){
+           ClassGroupMaster dbuser = classGroupMasterRepo.getById(classGroupMaster.getId());
+           dbuser.setModifiedAt(LocalDateTime.now());
+           dbuser.setModifiedBy(classGroupMaster.getModifiedBy());
+           dbuser.setClassGroup(classGroupMaster.getClassGroup());
+           classGroupMasterRepo.save(dbuser);
+           return ResponseEntity.ok("Class Group Updated");
+       }
+       return ResponseEntity.ok("Failed to update");
+   }
+
 
     /*--------------------------------CourseMaster-----------------------------------------*/
 
@@ -108,6 +122,21 @@ public class MasterController {
         courseMasterRepo.deleteById(id);
     }
 
+    @PutMapping("/CourseMaster")
+    public ResponseEntity<?> updateCourse(@RequestBody CourseMaster courseMaster){
+        boolean exist = courseMasterRepo.existsById(courseMaster.getId());
+        if (exist){
+            CourseMaster dbuser=courseMasterRepo.getById(courseMaster.getId());
+            dbuser.setModifiedAt(LocalDateTime.now());
+            dbuser.setModifiedBy(courseMaster.getModifiedBy());
+            dbuser.setCourseName(courseMaster.getCourseName());
+            dbuser.setCourseAbb(courseMaster.getCourseAbb());
+            courseMasterRepo.save(dbuser);
+            return ResponseEntity.ok("Course Updated");
+        }
+        return ResponseEntity.ok("Failed to update");
+    }
+
     /*--------------------------------ExamMaster-----------------------------------------*/
 
     @GetMapping("/ExamMaster")
@@ -125,6 +154,21 @@ public class MasterController {
     @DeleteMapping("/ExamMaster/{id}")
     public void deleteExam(@PathVariable int id){
         examMasterRepo.deleteById(id);
+    }
+
+    @PutMapping("/ExamMaster")
+    public ResponseEntity<?> updateExam(@RequestBody ExamMaster examMaster){
+        boolean exist = examMasterRepo.existsById(examMaster.getId());
+        if (exist){
+            ExamMaster dbuser = examMasterRepo.getById(examMaster.getId());
+            dbuser.setModifiedAt(LocalDateTime.now());
+            dbuser.setModifiedBy(examMaster.getModifiedBy());
+            dbuser.setExamName(examMaster.getExamName());
+            dbuser.setExamAbb(examMaster.getExamAbb());
+            examMasterRepo.save(dbuser);
+            return ResponseEntity.ok("Exam Updated");
+        }
+        return ResponseEntity.ok("Failed to update");
     }
 
     /*--------------------------------StandardMaster-----------------------------------------*/
@@ -146,6 +190,21 @@ public class MasterController {
         standardMasterRepo.deleteById(id);
     }
 
+    @PutMapping("/StandardMaster")
+    public ResponseEntity<?> updateStandard(@RequestBody StandardMaster standardMaster){
+        boolean exist = standardMasterRepo.existsById(standardMaster.getId());
+        if (exist){
+            StandardMaster dbuser = standardMasterRepo.getById(standardMaster.getId());
+            dbuser.setModifiedAt(LocalDateTime.now());
+            dbuser.setModifiedBy(standardMaster.getModifiedBy());
+            dbuser.setStandardName(standardMaster.getStandardName());
+            dbuser.setStdNameRoman(standardMaster.getStdNameRoman());
+            standardMasterRepo.save(dbuser);
+            return ResponseEntity.ok("Board Updated");
+        }
+        return ResponseEntity.ok("Failed to update");
+    }
+
     /*--------------------------------StateMaster-----------------------------------------*/
 
     @GetMapping("/StateMaster")
@@ -163,6 +222,21 @@ public class MasterController {
     @DeleteMapping("/StateMaster/{id}")
     public void deleteStateMaster(@PathVariable int id){
         stateMasterRepo.deleteById(id);
+    }
+
+    @PutMapping("/StateMaster")
+    public ResponseEntity<?> updateState(@RequestBody StateMaster stateMaster){
+        boolean exist = stateMasterRepo.existsById(stateMaster.getId());
+        if (exist){
+            StateMaster dbuser = stateMasterRepo.getById(stateMaster.getId());
+            dbuser.setModifiedAt(LocalDateTime.now());
+            dbuser.setModifiedBy(stateMaster.getModifiedBy());
+            dbuser.setStateName(stateMaster.getStateName());
+            dbuser.setStateCode(stateMaster.getStateCode());
+            stateMasterRepo.save(dbuser);
+            return ResponseEntity.ok("State Updated");
+        }
+        return ResponseEntity.ok("Failed to update");
     }
 
     /*--------------------------------SubjectMaster-----------------------------------------*/
@@ -186,7 +260,6 @@ public class MasterController {
         boolean exist = subjectMasterRepo.existsById(subjectMaster.getId());
         if (exist){
             SubjectMaster dbuser = subjectMasterRepo.getById(subjectMaster.getId());
-//            subjectMaster.setId(subjectMaster.getId());
             dbuser.setSubjectName(subjectMaster.getSubjectName());
             dbuser.setSubjectAbb(subjectMaster.getSubjectAbb());
             dbuser.setModifiedBy(subjectMaster.getModifiedBy());
@@ -220,6 +293,21 @@ public class MasterController {
     @DeleteMapping("/TestMaster/{id}")
     public void deleteTestMaster(@PathVariable int id){
         testMasterRepo.deleteById(id);
+    }
+
+    @PutMapping("/TestMaster")
+    public ResponseEntity<?> updateTest(@RequestBody TestMaster testMaster){
+        boolean exist = testMasterRepo.existsById(testMaster.getId());
+        if (exist){
+            TestMaster dbuser = testMasterRepo.getById(testMaster.getId());
+            dbuser.setModifiedAt(LocalDateTime.now());
+            dbuser.setModifiedBy(testMaster.getModifiedBy());
+            dbuser.setMockTestName(testMaster.getMockTestName());
+            dbuser.setLastYearPaper(testMaster.getLastYearPaper());
+            testMasterRepo.save(dbuser);
+            return ResponseEntity.ok("Test Updated");
+        }
+        return ResponseEntity.ok("Failed to update");
     }
     /*------------------------------------------------------------------------------------*/
 }
