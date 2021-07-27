@@ -26,7 +26,6 @@ import java.util.Collection;
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Getter
 @Setter
-@ToString
 public class user implements UserDetails {
     @Autowired
     @Transient
@@ -44,13 +43,15 @@ public class user implements UserDetails {
     private String username;
     private String password;
 
-    private LocalDate DateOfJoining;
+    private LocalDateTime DateOfJoining;
     private String localaddress;
     private String permanentAddress;
     private String branch;
-
+    private String language;
     private LocalDateTime createdat;
     private String createdBY;
+    private LocalDateTime modifiedat;
+    private String modifiedBY;
 
     @Column(unique = true,nullable = false)
     private String email;
@@ -59,8 +60,8 @@ public class user implements UserDetails {
     @Lob
     private byte[] image;
 
-    public Byte[] getImage(int usercode, HttpServletResponse response) throws IOException {
-        Byte[] image = userService.renderImageFromDb(usercode,response);
+    public byte[] getImage(int usercode, HttpServletResponse response) throws IOException {
+        byte[] image = userService.renderImageFromDb(usercode,response);
         return image;
     }
 
@@ -69,12 +70,33 @@ public class user implements UserDetails {
         this.password = bCryptPasswordEncoder.encode(password);
     }
 
-    public UserGroupMaster getGroup_name() {
-        return group_name;
+    public String getGroup_name() {
+        return group_name.getGroupname();
     }
 
     public void setGroup_name(UserGroupMaster group_name) {
         this.group_name = group_name;
+    }
+
+    @Override
+    public String toString() {
+        return "user{" +
+                "usercode=" + usercode +
+                ", group_name=" + group_name.getGid() +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", DateOfJoining=" + DateOfJoining +
+                ", localaddress='" + localaddress + '\'' +
+                ", permanentAddress='" + permanentAddress + '\'' +
+                ", branch='" + branch + '\'' +
+                ", language='" + language + '\'' +
+                ", createdat=" + createdat +
+                ", createdBY='" + createdBY + '\'' +
+                ", modifiedat=" + modifiedat +
+                ", modifiedBY='" + modifiedBY + '\'' +
+                ", email='" + email + '\'' +
+                ", phoneNumber=" + phoneNumber +
+                '}';
     }
 
     @Override

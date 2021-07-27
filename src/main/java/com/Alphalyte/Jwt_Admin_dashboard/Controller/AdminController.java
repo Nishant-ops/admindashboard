@@ -8,15 +8,25 @@ import com.Alphalyte.Jwt_Admin_dashboard.Reposoritries.User.UserGroupMasterRepo;
 import com.Alphalyte.Jwt_Admin_dashboard.Reposoritries.User.UserReposoritries;
 import com.Alphalyte.Jwt_Admin_dashboard.Service.UserServiceImpl;
 import com.Alphalyte.Jwt_Admin_dashboard.payload.Request.UserResquest;
+import com.Alphalyte.Jwt_Admin_dashboard.payload.Request.UserUpdateRequest;
+import com.Alphalyte.Jwt_Admin_dashboard.payload.Response.UserMasterTable;
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -34,92 +44,52 @@ public class AdminController {
 /*--------------------------------------uSERmASTER------------------------------------------*/
     //Get all users
     @GetMapping(path = "/users")
-    public List<user> users(){
-        return userDetails.getAllUsers();
+    public List<UserMasterTable> users(){
+        List<UserMasterTable> users = new ArrayList<>();
+        for (user u : userDetails.getAllUsers()) {
+            UserMasterTable user = new UserMasterTable();
+            user.setUsercode(u.getUsercode());
+            user.setUsername(u.getUsername());
+            user.setGroupname(u.getGroup_name());
+            user.setPhone(u.getPhoneNumber());
+            user.setEmail(u.getEmail());
+            user.setBranch(u.getBranch());
+            user.setCreatedAt(u.getCreatedat());
+            user.setCreatedBy(u.getCreatedBY());
+            user.setModifiedAt(u.getModifiedat());
+            user.setModifiedBy(u.getModifiedBY());
+            users.add(user);
+        };
+        return users;
     }
 
-    @GetMapping("/usertest/{usercode}")
-    public Byte[] renderImageFromDb(@PathVariable("usercode") int usercode, HttpServletResponse response) throws IOException {
-        return userDetails.renderImageFromDb(usercode,response);
+    @GetMapping("/users/{usercode}/photo")
+    public ResponseEntity<?> renderImageFromDb(@PathVariable("usercode") int usercode, HttpServletResponse response) throws IOException {
+        boolean exists = userRepo.existsById(usercode);
+        if (exists){
+        byte[] image = userDetails.renderImageFromDb(usercode,response);
+        if (image.length != 0){
+            response.setContentType("image/png");
+            InputStream is = new ByteArrayInputStream(image);
+            IOUtils.copy(is, response.getOutputStream());
+            return ResponseEntity.ok("image");
+        }}
+        return ResponseEntity.ok("Usercode not found");
     }
 
-    //Delete user by userID
+    /*-------------------------Delete user by userID-----------------------------*/
+
     @DeleteMapping(path = "/users/{usercode}")
-    public void deleteUser(@PathVariable("usercode") int usercode){
-//        userDetails.DeleteRelation(usercode);
+    public ResponseEntity<?> deleteUser(@PathVariable("usercode") int usercode){
         userDetails.deleteById(usercode);
+        return ResponseEntity.ok().build();
     }
 
-    //ADD a new user
+    /*----------------------------ADD A NEW USER---------------------------------*/
     @PostMapping(path = {"/users"})
     public ResponseEntity<?> addUser(@RequestPart("user") UserResquest userResquest, @RequestPart("file") MultipartFile file) throws IOException{
-      user user = new user();
-      user.setUsername(userResquest.getUsername());
-      user.setPassword(userResquest.getPassword());
-      user.setGroup_name(userGroupMasterRepo.getById(userResquest.getGroupcode()));
-      user.setEmail(userResquest.getEmail());
-      user.setPhoneNumber(userResquest.getPhone());
-      user.setLocaladdress(userResquest.getLocaladdress());
-      user.setPermanentAddress(userResquest.getPermanentAddress());
-      user.setBranch(userResquest.getBranch());
-      user.setCreatedBY(userResquest.getCreatedBy());
-      user.setCreatedat(LocalDateTime.now());
-      user.setDateOfJoining(userResquest.getDateOfJoining());
-      byte[] image = file.getBytes();
-      user.setImage(image);
-      userRepo.save(user);
-      return ResponseEntity.ok("User added");
+      return userDetails.AddUser(userResquest,file);
     }
-
-    /*--------------------------------------------------TEST-----------------------------------------------*/
-
-
-    /*@RequestMapping(value="/upload", method=RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Object> uploadFile(@RequestParam(required=true, value="file") MultipartFile file,
-                                             @RequestParam(required=true, value="username")String username,
-                                             @RequestParam(required = false, value = "password")String password) throws IOException  {
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        byte[] image = file.getBytes();
-        File convertFile = new File("C://Users//hp//Desktop//images//"+file.getOriginalFilename());
-        convertFile.createNewFile();
-        FileOutputStream fout = new FileOutputStream(convertFile);
-        fout.write(image);
-        fout.close();
-
-
-        return new ResponseEntity<>("File is uploaded successfully", HttpStatus.OK);
-
-    }*/
-
-
-    /*@PostMapping(path = {"/test"})
-    public @ResponseBody ResponseEntity<?> createUser(@RequestBody UserResquest u,@RequestParam("image") MultipartFile image, HttpServletRequest request),@RequestBody user u,@RequestParam("image") MultipartFile file, HttpServletRequest request)@RequestParam("groupname") UserGroupMaster groupname, @RequestParam("username") String username,
-                                                      @RequestParam("password") String password,
-                                                      @RequestParam("phoneNumber") long phoneNumber,@RequestParam("dateofjoining") LocalDate dateofjoining
-                                                      @RequestParam("localAddress") String localaddress,
-                                                      @RequestParam("permanentAddress") String permanentaddress,@RequestParam("branch") String branch,
-                                                      @RequestParam("createdBy") String createdby, HttpServletRequest request,
-                                                      final @RequestParam("image") MultipartFile file) {
-        try {
-            MultipartFile file = image;
-            if (fileName == null || fileName.contains("..")) {
-                return new ResponseEntity<>("Sorry! Filename contains invalid path sequence " + fileName, HttpStatus.BAD_REQUEST);
-            }
-           catch (Exception e) {
-                System.out.println("in catch");
-                e.printStackTrace();
-            }
-            byte[] imageData = file.getBytes();
-            System.out.println("HttpStatus===" + new ResponseEntity<>(HttpStatus.OK));
-            return new ResponseEntity<>("Product Saved With File - " , HttpStatus.OK);
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Exception: " + e);
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-    }*/
-    /*--------------------------------------------------TEST-----------------------------------------------*/
 
 
 //  Get user by usercode
@@ -128,12 +98,24 @@ public class AdminController {
         return userDetails.getUserById(usercode);
     }
 
+
 //  Update an existing user
     @PutMapping(path = {"/users"})
-    public user updateUser(@RequestBody user u){
-        userDetails.UpdateUser(u.getUsercode(),u);
-        return u;
+    public ResponseEntity<?> updateUser(@RequestPart("user") UserUpdateRequest userRequest, @RequestPart(value = "file",required = false) MultipartFile file) throws IOException{
+        boolean exists = userRepo.existsById(userRequest.getUsercode());
+        if (exists){
+            return userDetails.UpdateUser(userRequest,file);
+        }
+        return ResponseEntity.ok("User with usercode " + userRequest.getUsercode() + " doesn't exist");
     }
+
+
+
+
+
+
+
+
 
 /*--------------------------------uSERgROUPmASTER---------------------------------------------*/
 
@@ -154,6 +136,11 @@ public class AdminController {
         userGroupMasterRepo.save(userGroupMaster);
     }
 
+    @GetMapping("/usergroup/names")
+    public List<String> getGroupNames(){
+        return userGroupMasterRepo.groupnames();
+    }
+
     @PutMapping(path = {"/usergroup"})
     public ResponseEntity<UserGroupMaster> updateUser(@RequestBody UserGroupMaster userGroupMaster){
         boolean exist = userGroupMasterRepo.existsById(userGroupMaster.getGid());
@@ -167,7 +154,15 @@ public class AdminController {
         }
         return ResponseEntity.ok().build();
     }
+/*--------------------------------getGroupCodeByName-----------------------------------------*/
 
+    @GetMapping("/groupcode/{groupname}")
+    public ResponseEntity<?> getGroupCodeByName(@PathVariable("groupname") String groupname){
+        Integer gid = userGroupMasterRepo.call(groupname);
+        if (gid != null) {
+            return ResponseEntity.ok(gid);
+        }return ResponseEntity.ok("Invalid group name");
+    }
 
 
 /*--------------------------------cHANGEpASSWORD----------------------------------------------*/
