@@ -1,12 +1,15 @@
-package com.Alphalyte.Jwt_Admin_dashboard.Service;
+package com.Alphalyte.Jwt_Admin_dashboard.Service.User;
 
 
 import com.Alphalyte.Jwt_Admin_dashboard.Model.User.UserGroupMaster;
+import com.Alphalyte.Jwt_Admin_dashboard.Model.User.UserLogReport;
 import com.Alphalyte.Jwt_Admin_dashboard.Model.User.user;
 import com.Alphalyte.Jwt_Admin_dashboard.Reposoritries.User.UserGroupMasterRepo;
+import com.Alphalyte.Jwt_Admin_dashboard.Reposoritries.User.UserLogReportRepo;
 import com.Alphalyte.Jwt_Admin_dashboard.Reposoritries.User.UserReposoritries;
 import com.Alphalyte.Jwt_Admin_dashboard.payload.Request.UserResquest;
 import com.Alphalyte.Jwt_Admin_dashboard.payload.Request.UserUpdateRequest;
+import com.Alphalyte.Jwt_Admin_dashboard.payload.Response.UserMasterTable;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -21,12 +24,13 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Configuration
 @AllArgsConstructor
-public class UserServiceImpl implements UserService {
+public class UserMasterService {
 
     @Autowired
     private final UserReposoritries userRepo;
@@ -34,19 +38,30 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private final UserGroupMasterRepo userGroupMasterRepo;
 
+    @Autowired
+    private final UserLogReportRepo userLogReportRepo;
 
-    @Bean
-    public PasswordEncoder passencoder(){
-        return new BCryptPasswordEncoder();
+
+    public List<UserMasterTable> GetAllUsers(){
+        List<UserMasterTable> users = new ArrayList<>();
+        for (user u : userRepo.findAll()) {
+            UserMasterTable user = new UserMasterTable();
+            user.setUsercode(u.getUsercode());
+            user.setUsername(u.getUsername());
+            user.setGroupname(u.getGroup_name());
+            user.setPhone(u.getPhoneNumber());
+            user.setEmail(u.getEmail());
+            user.setBranch(u.getBranch());
+            user.setCreatedAt(u.getCreatedat());
+            user.setCreatedBy(u.getCreatedBY());
+            user.setModifiedAt(u.getModifiedat());
+            user.setModifiedBy(u.getModifiedBY());
+            users.add(user);
+        }
+        return users;
     }
 
-    @Override
-    public List<user> getAllUsers() {
-        return userRepo.findAll();
-    }
 
-
-    @Override
     public ResponseEntity<?> UpdateUser(UserUpdateRequest userRequest, MultipartFile file) throws IOException{
         user user = userRepo.findById(userRequest.getUsercode()).get();
 
@@ -115,24 +130,44 @@ public class UserServiceImpl implements UserService {
 
         System.out.println(user);
         userRepo.save(user);
+
+        UserLogReport userLogReport = new UserLogReport();
+
+        userLogReport.setUsercode(userRepo.getUsercodeFromName(userRequest.getUsername()));
+        userLogReport.setUsername(userRequest.getUsername());
+        userLogReport.setFormName("User Master");
+        userLogReport.setLogType("Update");
+        userLogReport.setLogDateTime(LocalDateTime.now());
+
+        userLogReportRepo.save(userLogReport);
+
         return ResponseEntity.ok("User Updated");
     }
 
 
 
-    @Override
-    public ResponseEntity<?> deleteById(int usercode) {
+
+    public ResponseEntity<?> deleteById(int usercode, String username) {
         boolean exist = userRepo.existsById(usercode);
         if(!exist) {return ResponseEntity.ok("User with usercode " + usercode + " not found!");}
         else{
             userRepo.deleteById(usercode);
+            UserLogReport userLogReport = new UserLogReport();
+
+            userLogReport.setUsercode(userRepo.getUsercodeFromName(username));
+            userLogReport.setUsername(username);
+            userLogReport.setFormName("User Master");
+            userLogReport.setLogType("Delete");
+            userLogReport.setLogDateTime(LocalDateTime.now());
+
+            userLogReportRepo.save(userLogReport);
             return ResponseEntity.ok("User deleted");
         }
     }
 
 
 
-    @Override
+
     public ResponseEntity<?> AddUser(UserResquest userRequest, MultipartFile file) throws IOException{
         user user = new user();
         if (userRequest.getUsername() != null){
@@ -203,10 +238,20 @@ public class UserServiceImpl implements UserService {
         }
 
         userRepo.save(user);
+
+        UserLogReport userLogReport = new UserLogReport();
+
+        userLogReport.setUsercode(userRepo.getUsercodeFromName(userRequest.getUsername()));
+        userLogReport.setUsername(userRequest.getUsername());
+        userLogReport.setFormName("User Master");
+        userLogReport.setLogType("Insert");
+        userLogReport.setLogDateTime(LocalDateTime.now());
+
+        userLogReportRepo.save(userLogReport);
+
         return ResponseEntity.ok("User added with usercode " + user.getUsercode());
     }
 
-    @Override
     public user getUserById(int usercode) {
         boolean exist = userRepo.existsById(usercode);
         if(!exist) {throw new NullPointerException("User not found!");}
@@ -214,22 +259,6 @@ public class UserServiceImpl implements UserService {
         return u;
     }
 
-
-
-/*    public void setImage(Integer id, MultipartFile file) {
-        try {
-            user dbuser = userRepo.findById(id).get();
-            Byte[] byteObjects = new Byte[file.getBytes().length];
-            int i = 0;
-            for (byte b : file.getBytes()) {
-                byteObjects[i++] = b;
-            }
-            dbuser.setImage(byteObjects);
-            userRepo.save(dbuser);
-        } catch (IOException e){
-            System.out.println("error " + e);;
-        }
-    }*/
 
 
     public byte[] renderImageFromDb(Integer id, HttpServletResponse response) throws IOException{
@@ -247,4 +276,19 @@ public class UserServiceImpl implements UserService {
         else return new byte[0];
     }
 
-}
+    /*    public void setImage(Integer id, MultipartFile file) {
+        try {
+            user dbuser = userRepo.findById(id).get();
+            Byte[] byteObjects = new Byte[file.getBytes().length];
+            int i = 0;
+            for (byte b : file.getBytes()) {
+                byteObjects[i++] = b;
+            }
+            dbuser.setImage(byteObjects);
+            userRepo.save(dbuser);
+        } catch (IOException e){
+            System.out.println("error " + e);;
+        }
+    }*/
+
+}  //end class

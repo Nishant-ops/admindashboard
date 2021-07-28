@@ -17,9 +17,13 @@ public class UserGroupMaster {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int gid;
+    @Column(unique = true,nullable = false)
     private String groupname;
+    @Column(nullable = false)
     private boolean active;
+    @Column(nullable = false)
     private LocalDateTime createdat;
+    @Column(nullable = false)
     private String createdby;
     private LocalDateTime modifiedat;
     private String modifiedby;

@@ -1,12 +1,11 @@
 package com.Alphalyte.Jwt_Admin_dashboard.Model.User;
 
 
-import com.Alphalyte.Jwt_Admin_dashboard.Service.UserServiceImpl;
+import com.Alphalyte.Jwt_Admin_dashboard.Service.User.UserMasterService;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,7 +14,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import javax.persistence.*;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 
@@ -29,7 +27,7 @@ import java.util.Collection;
 public class user implements UserDetails {
     @Autowired
     @Transient
-    UserServiceImpl userService;
+    UserMasterService userService;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

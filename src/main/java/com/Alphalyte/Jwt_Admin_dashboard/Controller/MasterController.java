@@ -2,6 +2,7 @@ package com.Alphalyte.Jwt_Admin_dashboard.Controller;
 
 import com.Alphalyte.Jwt_Admin_dashboard.Model.Master.*;
 import com.Alphalyte.Jwt_Admin_dashboard.Reposoritries.Master.*;
+import com.Alphalyte.Jwt_Admin_dashboard.Service.Master.BoardMasterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +15,7 @@ import java.util.List;
 public class MasterController {
 
     @Autowired
-    BoardMasterRepo boardMasterRepo;
+    BoardMasterService boardMasterService;
     @Autowired
     ClassGroupMasterRepo classGroupMasterRepo;
     @Autowired
@@ -32,34 +33,23 @@ public class MasterController {
 /*--------------------------------BoardMaster-----------------------------------------*/
     @GetMapping("/BoardMaster")
     public List<BoardMaster> getAllBoards(){
-        return boardMasterRepo.findAll();
+        return boardMasterService.GetAllBoards();
     }
 
     @PostMapping("/BoardMaster")
     public BoardMaster addBoard(@RequestBody BoardMaster boardMaster){
-        boardMaster.setCreatedAt(LocalDateTime.now());
-        boardMasterRepo.save(boardMaster);
-        return boardMaster;
+        return boardMasterService.AddBoard(boardMaster);
     }
 
     @DeleteMapping("/BoardMaster/{id}")
     public void deleteBoard(@PathVariable int id){
-        boardMasterRepo.deleteById(id);
+
+        boardMasterService.DeleteBoard(id);
     }
 
     @PutMapping("/BoardMaster")
     public ResponseEntity<?> updateBoard(@RequestBody BoardMaster boardMaster){
-        boolean exist = boardMasterRepo.existsById(boardMaster.getId());
-        if (exist){
-            BoardMaster dbuser = boardMasterRepo.getById(boardMaster.getId());
-            dbuser.setModifiedAt(LocalDateTime.now());
-            dbuser.setModifiedBy(boardMaster.getModifiedBy());
-            dbuser.setBoardAbb(boardMaster.getBoardAbb());
-            dbuser.setBoardName(boardMaster.getBoardName());
-            boardMasterRepo.save(dbuser);
-            return ResponseEntity.ok("Board Updated");
-        }
-        return ResponseEntity.ok("Failed to update");
+        return boardMasterService.UpdateBoard(boardMaster);
     }
 
 

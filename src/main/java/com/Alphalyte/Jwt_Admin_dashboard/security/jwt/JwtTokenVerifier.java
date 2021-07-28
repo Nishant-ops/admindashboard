@@ -1,7 +1,7 @@
 package com.Alphalyte.Jwt_Admin_dashboard.security.jwt;
 
 
-import com.Alphalyte.Jwt_Admin_dashboard.Service.userDetailsServiceImpl;
+import com.Alphalyte.Jwt_Admin_dashboard.Service.User.userDetailsServiceImpl;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;

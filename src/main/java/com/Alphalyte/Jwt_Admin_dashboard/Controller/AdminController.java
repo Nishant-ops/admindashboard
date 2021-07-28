@@ -1,19 +1,20 @@
 package com.Alphalyte.Jwt_Admin_dashboard.Controller;
 
+import com.Alphalyte.Jwt_Admin_dashboard.Reposoritries.User.UserLogReportRepo;
+import com.Alphalyte.Jwt_Admin_dashboard.Service.User.UserGroupMasterService;
 import com.Alphalyte.Jwt_Admin_dashboard.payload.Request.ChangePass;
 import com.Alphalyte.Jwt_Admin_dashboard.payload.Request.ResetPass;
 import com.Alphalyte.Jwt_Admin_dashboard.Model.User.UserGroupMaster;
 import com.Alphalyte.Jwt_Admin_dashboard.Model.User.user;
 import com.Alphalyte.Jwt_Admin_dashboard.Reposoritries.User.UserGroupMasterRepo;
 import com.Alphalyte.Jwt_Admin_dashboard.Reposoritries.User.UserReposoritries;
-import com.Alphalyte.Jwt_Admin_dashboard.Service.UserServiceImpl;
+import com.Alphalyte.Jwt_Admin_dashboard.Service.User.UserMasterService;
 import com.Alphalyte.Jwt_Admin_dashboard.payload.Request.UserResquest;
 import com.Alphalyte.Jwt_Admin_dashboard.payload.Request.UserUpdateRequest;
 import com.Alphalyte.Jwt_Admin_dashboard.payload.Response.UserMasterTable;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -23,17 +24,16 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 @CrossOrigin(origins = "*")
 public class AdminController {
     @Autowired
-    UserServiceImpl userDetails;
+    UserMasterService userDetails;
+
+    @Autowired
+    UserGroupMasterService userGroupMasterService;
 
     @Autowired
     UserReposoritries userRepo;
@@ -41,27 +41,18 @@ public class AdminController {
     @Autowired
     UserGroupMasterRepo userGroupMasterRepo;
 
+    @Autowired
+    UserLogReportRepo userLogReportRepo;
+
 /*--------------------------------------uSERmASTER------------------------------------------*/
-    //Get all users
+//  Get all users
+
     @GetMapping(path = "/users")
     public List<UserMasterTable> users(){
-        List<UserMasterTable> users = new ArrayList<>();
-        for (user u : userDetails.getAllUsers()) {
-            UserMasterTable user = new UserMasterTable();
-            user.setUsercode(u.getUsercode());
-            user.setUsername(u.getUsername());
-            user.setGroupname(u.getGroup_name());
-            user.setPhone(u.getPhoneNumber());
-            user.setEmail(u.getEmail());
-            user.setBranch(u.getBranch());
-            user.setCreatedAt(u.getCreatedat());
-            user.setCreatedBy(u.getCreatedBY());
-            user.setModifiedAt(u.getModifiedat());
-            user.setModifiedBy(u.getModifiedBY());
-            users.add(user);
-        };
-        return users;
+       return userDetails.GetAllUsers();
     }
+
+//  Get User Image
 
     @GetMapping("/users/{usercode}/photo")
     public ResponseEntity<?> renderImageFromDb(@PathVariable("usercode") int usercode, HttpServletResponse response) throws IOException {
@@ -77,17 +68,16 @@ public class AdminController {
         return ResponseEntity.ok("Usercode not found");
     }
 
-    /*-------------------------Delete user by userID-----------------------------*/
+//  Delete User
 
     @DeleteMapping(path = "/users/{usercode}")
-    public ResponseEntity<?> deleteUser(@PathVariable("usercode") int usercode){
-        userDetails.deleteById(usercode);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<?> deleteUser(@PathVariable("usercode") int usercode,@RequestBody String username){
+       return userDetails.deleteById(usercode,username);
     }
 
-    /*----------------------------ADD A NEW USER---------------------------------*/
-    @PostMapping(path = {"/users"})
-    public ResponseEntity<?> addUser(@RequestPart("user") UserResquest userResquest, @RequestPart("file") MultipartFile file) throws IOException{
+// Add User
+    @PostMapping(path = {"/users"}, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> addUser(@RequestPart(value = "user",required = true) UserResquest userResquest, @RequestParam(value = "file",required = true) MultipartFile file) throws IOException{
       return userDetails.AddUser(userResquest,file);
     }
 
@@ -111,61 +101,48 @@ public class AdminController {
 
 
 
-
-
-
-
-
-
 /*--------------------------------uSERgROUPmASTER---------------------------------------------*/
 
 
     @GetMapping("/usergroup")
     public List<UserGroupMaster> getallgroups(){
-        return userGroupMasterRepo.findAll();
+        return userGroupMasterService.GetAllGroups();
     }
 
     @GetMapping("/usergroup/{gid}")
-    public UserGroupMaster getById(@PathVariable int gid){
-        return userGroupMasterRepo.findById(gid).get();
+    public ResponseEntity getById(@PathVariable int gid){
+        return userGroupMasterService.GetById(gid);
     }
 
     @PostMapping("/usergroup")
-    public void addgroup(@RequestBody UserGroupMaster userGroupMaster){
-        userGroupMaster.setCreatedat(LocalDateTime.now());
-        userGroupMasterRepo.save(userGroupMaster);
+    public ResponseEntity<?> addGroup(@RequestBody UserGroupMaster userGroupMaster){
+        return userGroupMasterService.AddGroup(userGroupMaster);
     }
 
     @GetMapping("/usergroup/names")
     public List<String> getGroupNames(){
-        return userGroupMasterRepo.groupnames();
+        return userGroupMasterService.GetGroupNames();
     }
 
     @PutMapping(path = {"/usergroup"})
-    public ResponseEntity<UserGroupMaster> updateUser(@RequestBody UserGroupMaster userGroupMaster){
-        boolean exist = userGroupMasterRepo.existsById(userGroupMaster.getGid());
-        if (exist){
-            UserGroupMaster dbuser = userGroupMasterRepo.getById(userGroupMaster.getGid());
-            dbuser.setModifiedat(LocalDateTime.now());
-            dbuser.setGroupname(userGroupMaster.getGroupname());
-            dbuser.setActive(userGroupMaster.isActive());
-            userGroupMasterRepo.save(dbuser);
-            return ResponseEntity.ok(dbuser);
-        }
-        return ResponseEntity.ok().build();
+    public ResponseEntity<?> updateUser(@RequestBody UserGroupMaster userGroupMaster){
+        return userGroupMasterService.UpdateGroup(userGroupMaster);
     }
-/*--------------------------------getGroupCodeByName-----------------------------------------*/
+
 
     @GetMapping("/groupcode/{groupname}")
-    public ResponseEntity<?> getGroupCodeByName(@PathVariable("groupname") String groupname){
-        Integer gid = userGroupMasterRepo.call(groupname);
-        if (gid != null) {
-            return ResponseEntity.ok(gid);
-        }return ResponseEntity.ok("Invalid group name");
+    public ResponseEntity<?> getGroupCodeByName(@PathVariable("groupname") String groupName){
+        return userGroupMasterService.GetGroupCodeByName(groupName);
+    }
+
+    @DeleteMapping("/usergroup/{groupname}")
+    public ResponseEntity<?> deleteGroup(@PathVariable("groupname") String groupname, @RequestBody String username){
+        return userGroupMasterService.DeleteGroupByName(groupname,username);
     }
 
 
-/*--------------------------------cHANGEpASSWORD----------------------------------------------*/
+
+    /*--------------------------------cHANGEpASSWORD----------------------------------------------*/
 
     @PutMapping("/changepass")
     public ResponseEntity<?> ChangePass(@RequestBody ChangePass changePass){
@@ -179,7 +156,10 @@ public class AdminController {
         }
         return ResponseEntity.ok("Old Password not matched");
     }
-/*---------------------------------rESETpASSWORD----------------------------------------------*/
+
+
+
+    /*---------------------------------rESETpASSWORD----------------------------------------------*/
 
     @PutMapping("/resetpass")
     public ResponseEntity<?> ResetPass(@RequestBody ResetPass resetPass){
