@@ -1,8 +1,11 @@
 package com.Alphalyte.Jwt_Admin_dashboard.security.jwt;
 
+import com.Alphalyte.Jwt_Admin_dashboard.Model.User.user;
+import com.Alphalyte.Jwt_Admin_dashboard.Reposoritries.User.UserReposoritries;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import javax.servlet.http.HttpServletRequest;
@@ -10,7 +13,8 @@ import java.util.Date;
 
 @Component
 public class JwtUsernameandPasswordAuthenticationFilter {
-
+@Autowired
+    UserReposoritries userReposoritries;
     private final String key="AlphalyteAlphalyteAlphalyteAlphalyteAlphalyteAlphalyteAlphalyteAlphalyteAlphalyteAlphalyte";
 
     public Claims getAllClaimsFromJwtToken(String token)
@@ -18,7 +22,7 @@ public class JwtUsernameandPasswordAuthenticationFilter {
         Claims claims;
         try{
             claims=Jwts.parser()
-                    .setSigningKey(key)
+                    .setSigningKey(Keys.hmacShaKeyFor(key.getBytes()))
                     .parseClaimsJws(token)
                     .getBody();
 
@@ -32,12 +36,20 @@ public class JwtUsernameandPasswordAuthenticationFilter {
 
     public String generateToken(String username)
     {
-        return Jwts.builder()
+        int id=userReposoritries.getUsercodeFromName(username);
+        user user=userReposoritries.getById(id);
+
+        String token= Jwts.builder()
                 .setSubject(username)
+                .claim("authorities",user.getAuthorities())
                 .setIssuedAt(new Date())
                 .setExpiration(generateExperationDate())
                 .signWith(Keys.hmacShaKeyFor(key.getBytes()))
                 .compact();
+
+        //System.out.println(token);
+
+        return token;
     }
 
     public String getUsernameFromToken(String Token)
@@ -56,15 +68,14 @@ public class JwtUsernameandPasswordAuthenticationFilter {
 
     public Date generateExperationDate()
     {
-        return new Date(new Date().getTime()+2*1000);
+        return new Date(new Date().getTime()+2*1000000000);
     }
 
     public boolean ValidateToken(String Token, UserDetails userDetails)
     {
         String username=this.getUsernameFromToken(Token);
-
         return (
-                username!=null&&userDetails.getUsername()==username&&
+                username!=null&&userDetails.getUsername().equals(username)&&
                         !expiresToken(Token)
                 );
     }

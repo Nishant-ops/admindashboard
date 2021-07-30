@@ -16,10 +16,14 @@ import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -104,7 +108,10 @@ public class AdminController {
 /*--------------------------------uSERgROUPmASTER---------------------------------------------*/
 
 
+
+
     @GetMapping("/usergroup")
+    @PreAuthorize("hasAuthority('DEVELOPER')")
     public List<UserGroupMaster> getallgroups(){
         return userGroupMasterService.GetAllGroups();
     }

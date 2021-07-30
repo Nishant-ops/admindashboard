@@ -4,11 +4,12 @@ import com.Alphalyte.Jwt_Admin_dashboard.Model.Master.BoardMaster;
 import com.Alphalyte.Jwt_Admin_dashboard.Reposoritries.Master.BoardMasterRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
+@Service
 public class BoardMasterService {
     @Autowired
     BoardMasterRepo boardMasterRepo;
