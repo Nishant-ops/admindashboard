@@ -5,6 +5,7 @@ import com.Alphalyte.Jwt_Admin_dashboard.Service.User.userDetailsServiceImpl;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,7 +19,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class JwtTokenVerifier extends OncePerRequestFilter {
-    private final String key="AlphalyteAlphalyteAlphalyteAlphalyteAlphalyteAlphalyteAlphalyteAlphalyteAlphalyteAlphalyte";
+
+
 
     private JwtUsernameandPasswordAuthenticationFilter jwtUsernameandPasswordAuthenticationFilter;
     private userDetailsServiceImpl adminDetailsService;
@@ -39,12 +41,7 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
 
         if(tokenAuth!=null)
         {
-            Claims claims=claims = Jwts.parser()
-                    .setSigningKey(Keys.hmacShaKeyFor(key.getBytes()))
-                    .parseClaimsJws(tokenAuth)
-                    .getBody();
-
-            String Username=claims.getSubject();
+            String Username=jwtUsernameandPasswordAuthenticationFilter.getUsernameFromToken(tokenAuth);
 
 
             if(Username!=null)
