@@ -1,5 +1,6 @@
 package com.Alphalyte.Jwt_Admin_dashboard.Model.User;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
 import javax.persistence.*;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "group_master")
 @ToString
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class UserGroupMaster {
 
     @Id

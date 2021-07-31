@@ -29,13 +29,8 @@ public class ExamMaster {
     @Nullable
     private LocalDateTime ModifiedAt;
 
-    public ExamMaster(String examName, String examAbb, String createdBy,
-                      @Nullable String modifiedBy, @Nullable LocalDateTime modifiedAt) {
+    public ExamMaster(String examName, String examAbb) {
         ExamName = examName;
         ExamAbb = examAbb;
-        CreatedBy = createdBy;
-        CreatedAt = LocalDateTime.now();
-        ModifiedBy = modifiedBy;
-        ModifiedAt = modifiedAt;
     }
 }

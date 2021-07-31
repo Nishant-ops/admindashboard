@@ -1,5 +1,6 @@
 package com.Alphalyte.Jwt_Admin_dashboard.Controller;
 
+import com.Alphalyte.Jwt_Admin_dashboard.Model.User.UserLogReport;
 import com.Alphalyte.Jwt_Admin_dashboard.Reposoritries.User.UserLogReportRepo;
 import com.Alphalyte.Jwt_Admin_dashboard.Service.User.UserGroupMasterService;
 import com.Alphalyte.Jwt_Admin_dashboard.payload.Request.ChangePass;
@@ -79,7 +80,7 @@ public class AdminController {
        return userDetails.deleteById(usercode,username);
     }
 
-// Add User
+//  Add User
     @PostMapping(path = {"/users"}, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> addUser(@RequestPart(value = "user",required = true) UserResquest userResquest, @RequestParam(value = "file",required = true) MultipartFile file) throws IOException{
       return userDetails.AddUser(userResquest,file);
@@ -143,11 +144,16 @@ public class AdminController {
     }
 
     @DeleteMapping("/usergroup/{groupname}")
-    public ResponseEntity<?> deleteGroup(@PathVariable("groupname") String groupname, @RequestBody String username){
+    public ResponseEntity<?> deleteGroup(@PathVariable("groupname") String groupname, @RequestParam String username){
         return userGroupMasterService.DeleteGroupByName(groupname,username);
     }
 
-
+    /*--------------------------------User Log Report--------------------------------------------*/
+    @GetMapping("/logreport")
+    public ResponseEntity getLogReport(){
+        List<UserLogReport> logs = userLogReportRepo.findAll();
+        return ResponseEntity.ok(logs);
+    }
 
     /*--------------------------------cHANGEpASSWORD----------------------------------------------*/
 

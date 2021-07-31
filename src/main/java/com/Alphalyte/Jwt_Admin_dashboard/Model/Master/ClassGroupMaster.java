@@ -21,7 +21,6 @@ public class ClassGroupMaster {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String ClassGroup;
-//    private String ClassGroupAbb;
     private String CreatedBy;
     private LocalDateTime CreatedAt;
     @Nullable
@@ -30,13 +29,7 @@ public class ClassGroupMaster {
     private LocalDateTime ModifiedAt;
 
 
-    public ClassGroupMaster(String classGroup, /*String classGroupAbb,*/ String createdBy,
-                            @Nullable String modifiedBy, @Nullable LocalDateTime modifiedAt) {
+    public ClassGroupMaster(String classGroup) {
         ClassGroup = classGroup;
-//        ClassGroupAbb = classGroupAbb;
-        CreatedBy = createdBy;
-        CreatedAt = LocalDateTime.now();
-        ModifiedBy = modifiedBy;
-        ModifiedAt = modifiedAt;
     }
 }

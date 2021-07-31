@@ -24,18 +24,11 @@ public class StandardMaster {
     private String StdNameRoman;
     private String CreatedBy;
     private LocalDateTime CreatedAt;
-    @Nullable
     private String ModifiedBy;
-    @Nullable
     private LocalDateTime ModifiedAt;
 
-    public StandardMaster(String standardName, String stdNameRoman, String createdBy,
-                          @Nullable String modifiedBy, @Nullable LocalDateTime modifiedAt) {
+    public StandardMaster(String standardName, String stdNameRoman) {
         StandardName = standardName;
         StdNameRoman = stdNameRoman;
-        CreatedBy = createdBy;
-        CreatedAt = LocalDateTime.now();
-        ModifiedBy = modifiedBy;
-        ModifiedAt = modifiedAt;
     }
 }

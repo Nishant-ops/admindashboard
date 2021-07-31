@@ -24,18 +24,11 @@ public class StateMaster {
     private String StateCode;
     private String CreatedBy;
     private LocalDateTime CreatedAt;
-    @Nullable
     private String ModifiedBy;
-    @Nullable
     private LocalDateTime ModifiedAt;
 
-    public StateMaster(String stateName, String stateCode, String createdBy,
-                       @Nullable String modifiedBy, @Nullable LocalDateTime modifiedAt) {
+    public StateMaster(String stateName, String stateCode) {
         StateName = stateName;
         StateCode = stateCode;
-        CreatedBy = createdBy;
-        CreatedAt = LocalDateTime.now();
-        ModifiedBy = modifiedBy;
-        ModifiedAt = modifiedAt;
     }
 }

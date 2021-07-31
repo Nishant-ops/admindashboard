@@ -51,18 +51,19 @@ public class UserGroupMasterService {
         Integer gid = userGroupMasterRepo.call(userGroupMaster.getGroupname());
         if (gid == null) {
             userGroupMaster.setCreatedat(LocalDateTime.now());
-            userGroupMasterRepo.save(userGroupMaster);
-
             //Saving Log------------------------------:)
             UserLogReport userLogReport = new UserLogReport();
 
             userLogReport.setUsercode(userRepo.getUsercodeFromName(userGroupMaster.getCreatedby()));
             userLogReport.setUsername(userGroupMaster.getCreatedby());
-            userLogReport.setLogType("Created");
+            userLogReport.setLogType("Insert");
             userLogReport.setFormName("User Group Master");
             userLogReport.setLogDateTime(LocalDateTime.now());
 
             userLogReportRepo.save(userLogReport);
+            userGroupMasterRepo.save(userGroupMaster);
+
+
 
             return ResponseEntity.ok("group added");
         }
@@ -77,17 +78,17 @@ public class UserGroupMasterService {
             dbgroup.setModifiedby(userGroupMaster.getModifiedby());
             dbgroup.setGroupname(userGroupMaster.getGroupname());
             dbgroup.setActive(userGroupMaster.isActive());
-            userGroupMasterRepo.save(dbgroup);
-
             //Saving Log
             UserLogReport userLogReport = new UserLogReport();
-
-            userLogReport.setUsercode(userRepo.getUsercodeFromName(userGroupMaster.getCreatedby()));
+            System.out.println(userGroupMaster.getModifiedby());
+            userLogReport.setUsercode(userRepo.getUsercodeFromName(userGroupMaster.getModifiedby()));
             userLogReport.setUsername(userGroupMaster.getModifiedby());
-            userLogReport.setLogType("Updated");
+            userLogReport.setLogType("Update");
             userLogReport.setFormName("User Group Master");
             userLogReport.setLogDateTime(LocalDateTime.now());
             userLogReportRepo.save(userLogReport);
+            userGroupMasterRepo.save(dbgroup);
+
 
             return ResponseEntity.ok(dbgroup);
         }
@@ -102,18 +103,22 @@ public class UserGroupMasterService {
                 for (com.Alphalyte.Jwt_Admin_dashboard.Model.User.user user :userRepo.groupUsers(user_gid)){
                     user.setGroup_name(userGroupMasterRepo.getById(gid));
                 }
-
-                userGroupMasterRepo.deleteById(userGroupMasterRepo.call(groupname));
-
                 //Saving Log Report
                 UserLogReport userLogReport = new UserLogReport();
-
-                userLogReport.setUsercode(userRepo.getUsercodeFromName(username));
+                Integer usercode = userRepo.getUsercodeFromName(username);
+                System.out.println(username);
+                userLogReport.setUsercode(usercode);
                 userLogReport.setUsername(username);
                 userLogReport.setFormName("User Group Master");
                 userLogReport.setLogType("Delete");
                 userLogReport.setLogDateTime(LocalDateTime.now());
                 userLogReportRepo.save(userLogReport);
+
+                userGroupMasterRepo.deleteById(userGroupMasterRepo.call(groupname));
+
+
+
+
 
                 return ResponseEntity.ok("Group deleted successfully");
             }

@@ -32,7 +32,7 @@ public class LoginController {
     @Autowired
     Ip_repository ip_repository;
 
-    List<String> list=new ArrayList<>();
+
 
    // private
     @PostMapping("/signin")
@@ -42,7 +42,6 @@ public class LoginController {
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),
                         loginRequest.getPassword())
         );
-        list.add("ROLE_ADMIN");
         System.out.println(loginRequest.getUsername());
         SecurityContextHolder.getContext().setAuthentication(authentication);
         user userDetails=(user) authentication.getPrincipal();
@@ -53,8 +52,7 @@ public class LoginController {
         ip_repository.save(user_ip);
 
         return ResponseEntity.ok(new JwtResponse(
-                token, userDetails.getUsercode(),userDetails.getUsername(), userDetails.getEmail(),
-                list
+                token, userDetails.getUsercode(),userDetails.getUsername()
         ));
     }
 }

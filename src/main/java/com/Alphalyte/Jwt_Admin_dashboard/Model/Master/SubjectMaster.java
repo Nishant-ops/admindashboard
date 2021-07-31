@@ -26,11 +26,9 @@ public class SubjectMaster {
     private String ModifiedBy;
     private LocalDateTime ModifiedAt;
 
-    public SubjectMaster(String subjectName, String subjectAbb, String createdBy,
-                          String modifiedBy) {
+    public SubjectMaster(String subjectName, String subjectAbb) {
         SubjectName = subjectName;
         SubjectAbb = subjectAbb;
-        CreatedBy = createdBy;
-        ModifiedBy = modifiedBy;
+
     }
 }

@@ -17,7 +17,7 @@ public interface UserReposoritries extends JpaRepository<user,Integer> {
 
     Boolean existsByEmail(String email);
 
-    @Query(value = "SELECT u.usercode FROM user_master u WHERE username=?1",nativeQuery = true)
+    @Query(value = "SELECT u.usercode FROM user_master u WHERE username=?",nativeQuery = true)
     Integer getUsercodeFromName(String username);
 
     @Query(value = "SELECT * FROM user_master WHERE group_name_gid=?1",nativeQuery = true)

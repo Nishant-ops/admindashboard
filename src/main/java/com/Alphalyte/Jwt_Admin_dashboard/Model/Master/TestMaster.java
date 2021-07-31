@@ -24,18 +24,11 @@ public class TestMaster {
     private String LastYearPaper;
     private String CreatedBy;
     private LocalDateTime CreatedAt;
-    @Nullable
     private String ModifiedBy;
-    @Nullable
     private LocalDateTime ModifiedAt;
 
-    public TestMaster(String mockTestName, String lastYearPaper, String createdBy,
-                      @Nullable String modifiedBy, @Nullable LocalDateTime modifiedAt) {
+    public TestMaster(String mockTestName, String lastYearPaper) {
         MockTestName = mockTestName;
         LastYearPaper = lastYearPaper;
-        CreatedBy = createdBy;
-        CreatedAt = LocalDateTime.now();
-        ModifiedBy = modifiedBy;
-        ModifiedAt = modifiedAt;
     }
 }

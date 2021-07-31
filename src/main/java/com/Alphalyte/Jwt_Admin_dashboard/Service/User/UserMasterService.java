@@ -129,7 +129,7 @@ public class UserMasterService {
         }
 
         System.out.println(user);
-        userRepo.save(user);
+
 
         UserLogReport userLogReport = new UserLogReport();
 
@@ -140,6 +140,7 @@ public class UserMasterService {
         userLogReport.setLogDateTime(LocalDateTime.now());
 
         userLogReportRepo.save(userLogReport);
+        userRepo.save(user);
 
         return ResponseEntity.ok("User Updated");
     }

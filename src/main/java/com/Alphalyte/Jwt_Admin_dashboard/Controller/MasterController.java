@@ -2,9 +2,10 @@ package com.Alphalyte.Jwt_Admin_dashboard.Controller;
 
 import com.Alphalyte.Jwt_Admin_dashboard.Model.Master.*;
 import com.Alphalyte.Jwt_Admin_dashboard.Reposoritries.Master.*;
-import com.Alphalyte.Jwt_Admin_dashboard.Service.Master.BoardMasterService;
+import com.Alphalyte.Jwt_Admin_dashboard.Service.Master.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -17,39 +18,41 @@ public class MasterController {
     @Autowired
     BoardMasterService boardMasterService;
     @Autowired
-    ClassGroupMasterRepo classGroupMasterRepo;
+    ClassGroupMasterService classGroupMasterService;
     @Autowired
-    CourseMasterRepo courseMasterRepo;
+    CourseMasterService courseMasterService;
     @Autowired
-    ExamMasterRepo examMasterRepo;
+    ExamMasterService examMasterService;
     @Autowired
-    StandardMasterRepo standardMasterRepo;
+    StandardMasterService standardMasterService;
     @Autowired
-    StateMasterRepo stateMasterRepo;
+    StateMasterService stateMasterService;
     @Autowired
-    SubjectMasterRepo subjectMasterRepo;
+    SubjectMasterService subjectMasterService;
     @Autowired
-    TestMasterRepo testMasterRepo;
+    TestMasterService testMasterService;
+
 /*--------------------------------BoardMaster-----------------------------------------*/
     @GetMapping("/BoardMaster")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('DEVELOPER')")
     public List<BoardMaster> getAllBoards(){
         return boardMasterService.GetAllBoards();
     }
 
     @PostMapping("/BoardMaster")
-    public BoardMaster addBoard(@RequestBody BoardMaster boardMaster){
-        return boardMasterService.AddBoard(boardMaster);
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('DEVELOPER')")
+    public BoardMaster addBoard(@RequestBody BoardMaster boardMaster,@RequestParam(required = true) String username){
+        return boardMasterService.AddBoard(boardMaster,username);
     }
 
     @DeleteMapping("/BoardMaster/{id}")
-    public void deleteBoard(@PathVariable int id){
-
-        boardMasterService.DeleteBoard(id);
+    public void deleteBoard(@PathVariable int id,@RequestParam String username){
+        boardMasterService.DeleteBoard(id,username);
     }
 
     @PutMapping("/BoardMaster")
-    public ResponseEntity<?> updateBoard(@RequestBody BoardMaster boardMaster){
-        return boardMasterService.UpdateBoard(boardMaster);
+    public ResponseEntity<?> updateBoard(@RequestBody BoardMaster boardMaster, @RequestParam String username){
+        return boardMasterService.UpdateBoard(boardMaster, username);
     }
 
 
@@ -58,35 +61,25 @@ public class MasterController {
     @GetMapping("/ClassGroupMaster")
     public List<ClassGroupMaster> getAllClassGroupMaster()
     {
-        return classGroupMasterRepo.findAll();
+        return classGroupMasterService.GetAllClassGroups();
     }
 
     @PostMapping("/ClassGroupMaster")
-    public ClassGroupMaster AddNewClassGroupMaster(@RequestBody ClassGroupMaster classGroupMaster)
+    public ResponseEntity<?> AddNewClassGroupMaster(@RequestBody ClassGroupMaster classGroupMaster,@RequestParam(required = true) String username)
     {
-        classGroupMaster.setCreatedAt(LocalDateTime.now());
-        classGroupMasterRepo.save(classGroupMaster);
-        return classGroupMaster;
+        return classGroupMasterService.AddClassGroup(classGroupMaster,username);
     }
 
    @DeleteMapping("/ClassGroupMaster/{id}")
-   public void DeleteClassGroupMaster(@PathVariable int id)
+   public ResponseEntity<?> DeleteClassGroupMaster(@PathVariable int id,@RequestParam(required = true) String username)
    {
-       classGroupMasterRepo.deleteById(id);
+       return classGroupMasterService.DeleteClassGroup(id,username);
    }
 
    @PutMapping("/ClassGroupMaster")
-   public ResponseEntity<?> updateClassGroup(@RequestBody ClassGroupMaster classGroupMaster){
-       boolean exist = classGroupMasterRepo.existsById(classGroupMaster.getId());
-       if (exist){
-           ClassGroupMaster dbuser = classGroupMasterRepo.getById(classGroupMaster.getId());
-           dbuser.setModifiedAt(LocalDateTime.now());
-           dbuser.setModifiedBy(classGroupMaster.getModifiedBy());
-           dbuser.setClassGroup(classGroupMaster.getClassGroup());
-           classGroupMasterRepo.save(dbuser);
-           return ResponseEntity.ok("Class Group Updated");
-       }
-       return ResponseEntity.ok("Failed to update");
+   public ResponseEntity<?> updateClassGroup(@RequestBody ClassGroupMaster classGroupMaster,@RequestParam(required = true) String username)
+   {
+        return classGroupMasterService.UpdateClassGroup(classGroupMaster,username);
    }
 
 
@@ -95,138 +88,90 @@ public class MasterController {
     @GetMapping("/CourseMaster")
     public List<CourseMaster> getAllCourseMaster()
     {
-        return courseMasterRepo.findAll();
+        return courseMasterService.GetAllCourses();
     }
 
     @PostMapping("/CourseMaster")
-    public CourseMaster AddNewCourseMaster(@RequestBody CourseMaster courseMaster)
+    public ResponseEntity<?> AddNewCourseMaster(@RequestBody CourseMaster courseMaster, @RequestParam String username)
     {
-       courseMaster.setCreatedAt(LocalDateTime.now());
-       courseMasterRepo.save(courseMaster);
-       return courseMaster;
+        return courseMasterService.AddCourse(courseMaster,username);
     }
 
     @DeleteMapping("/CourseMaster/{id}")
-    public void DeleteCourseMaster(@PathVariable int id)
+    public ResponseEntity DeleteCourseMaster(@PathVariable int id, @RequestParam String username)
     {
-        courseMasterRepo.deleteById(id);
+        return courseMasterService.DeleteCourse(id,username);
     }
 
     @PutMapping("/CourseMaster")
-    public ResponseEntity<?> updateCourse(@RequestBody CourseMaster courseMaster){
-        boolean exist = courseMasterRepo.existsById(courseMaster.getId());
-        if (exist){
-            CourseMaster dbuser=courseMasterRepo.getById(courseMaster.getId());
-            dbuser.setModifiedAt(LocalDateTime.now());
-            dbuser.setModifiedBy(courseMaster.getModifiedBy());
-            dbuser.setCourseName(courseMaster.getCourseName());
-            dbuser.setCourseAbb(courseMaster.getCourseAbb());
-            courseMasterRepo.save(dbuser);
-            return ResponseEntity.ok("Course Updated");
-        }
-        return ResponseEntity.ok("Failed to update");
+    public ResponseEntity<?> updateCourse(@RequestBody CourseMaster courseMaster, @RequestParam String username){
+        return courseMasterService.UpdateCourse(courseMaster,username);
     }
 
     /*--------------------------------ExamMaster-----------------------------------------*/
 
     @GetMapping("/ExamMaster")
     public List<ExamMaster> getAllExamMaster(){
-        return examMasterRepo.findAll();
+        return examMasterService.GetAllExams();
     }
 
     @PostMapping("/ExamMaster")
-    public ExamMaster addExam(@RequestBody ExamMaster examMaster){
-        examMaster.setCreatedAt(LocalDateTime.now());
-        examMasterRepo.save(examMaster);
-        return examMaster;
+    public ResponseEntity<?> addExam(@RequestBody ExamMaster examMaster, @RequestParam String username){
+        return examMasterService.AddExam(examMaster,username);
     }
 
     @DeleteMapping("/ExamMaster/{id}")
-    public void deleteExam(@PathVariable int id){
-        examMasterRepo.deleteById(id);
+    public ResponseEntity<?> deleteExam(@PathVariable int id, @RequestParam String username){
+        return examMasterService.DeleteExam(id,username);
     }
 
     @PutMapping("/ExamMaster")
-    public ResponseEntity<?> updateExam(@RequestBody ExamMaster examMaster){
-        boolean exist = examMasterRepo.existsById(examMaster.getId());
-        if (exist){
-            ExamMaster dbuser = examMasterRepo.getById(examMaster.getId());
-            dbuser.setModifiedAt(LocalDateTime.now());
-            dbuser.setModifiedBy(examMaster.getModifiedBy());
-            dbuser.setExamName(examMaster.getExamName());
-            dbuser.setExamAbb(examMaster.getExamAbb());
-            examMasterRepo.save(dbuser);
-            return ResponseEntity.ok("Exam Updated");
-        }
-        return ResponseEntity.ok("Failed to update");
+    public ResponseEntity<?> updateExam(@RequestBody ExamMaster examMaster, @RequestParam String username){
+        return examMasterService.UpdateExam(examMaster,username);
     }
 
     /*--------------------------------StandardMaster-----------------------------------------*/
 
     @GetMapping("/StandardMaster")
     public List<StandardMaster> getAllStandardMaster(){
-        return standardMasterRepo.findAll();
+        return standardMasterService.GetAllStandards();
     }
 
     @PostMapping("/StandardMaster")
-    public StandardMaster addStandardMaster(@RequestBody StandardMaster standardMaster){
-        standardMaster.setCreatedAt(LocalDateTime.now());
-        standardMasterRepo.save(standardMaster);
-        return standardMaster;
+    public ResponseEntity addStandardMaster(@RequestBody StandardMaster standardMaster, @RequestParam String username){
+        return standardMasterService.AddStandard(standardMaster,username);
     }
 
     @DeleteMapping("/StandardMaster/{id}")
-    public void deleteStandardMaster(@PathVariable int id){
-        standardMasterRepo.deleteById(id);
+    public ResponseEntity<?> deleteStandardMaster(@PathVariable int id, @RequestParam String username){
+        return standardMasterService.DeleteStandard(id,username);
     }
 
     @PutMapping("/StandardMaster")
-    public ResponseEntity<?> updateStandard(@RequestBody StandardMaster standardMaster){
-        boolean exist = standardMasterRepo.existsById(standardMaster.getId());
-        if (exist){
-            StandardMaster dbuser = standardMasterRepo.getById(standardMaster.getId());
-            dbuser.setModifiedAt(LocalDateTime.now());
-            dbuser.setModifiedBy(standardMaster.getModifiedBy());
-            dbuser.setStandardName(standardMaster.getStandardName());
-            dbuser.setStdNameRoman(standardMaster.getStdNameRoman());
-            standardMasterRepo.save(dbuser);
-            return ResponseEntity.ok("Board Updated");
-        }
-        return ResponseEntity.ok("Failed to update");
+    public ResponseEntity<?> updateStandard(@RequestBody StandardMaster standardMaster, @RequestParam String username){
+        return standardMasterService.UpdateStandard(standardMaster,username);
     }
 
     /*--------------------------------StateMaster-----------------------------------------*/
 
     @GetMapping("/StateMaster")
     public List<StateMaster> getAllStateMaster(){
-        return stateMasterRepo.findAll();
+        return stateMasterService.GetAllStates();
     }
 
     @PostMapping("/StateMaster")
-    public StateMaster addStateMaster(@RequestBody StateMaster stateMaster){
-        stateMaster.setCreatedAt(LocalDateTime.now());
-        stateMasterRepo.save(stateMaster);
-        return stateMaster;
+    public ResponseEntity<?> addStateMaster(@RequestBody StateMaster stateMaster, @RequestParam String username){
+        return stateMasterService.AddState(stateMaster,username);
     }
 
     @DeleteMapping("/StateMaster/{id}")
-    public void deleteStateMaster(@PathVariable int id){
-        stateMasterRepo.deleteById(id);
+    public ResponseEntity<?> deleteStateMaster(@PathVariable int id, @RequestParam String username){
+        return stateMasterService.DeleteState(id, username);
     }
 
     @PutMapping("/StateMaster")
-    public ResponseEntity<?> updateState(@RequestBody StateMaster stateMaster){
-        boolean exist = stateMasterRepo.existsById(stateMaster.getId());
-        if (exist){
-            StateMaster dbuser = stateMasterRepo.getById(stateMaster.getId());
-            dbuser.setModifiedAt(LocalDateTime.now());
-            dbuser.setModifiedBy(stateMaster.getModifiedBy());
-            dbuser.setStateName(stateMaster.getStateName());
-            dbuser.setStateCode(stateMaster.getStateCode());
-            stateMasterRepo.save(dbuser);
-            return ResponseEntity.ok("State Updated");
-        }
-        return ResponseEntity.ok("Failed to update");
+    public ResponseEntity<?> updateState(@RequestBody StateMaster stateMaster, @RequestParam String username){
+        return stateMasterService.UpdateState(stateMaster,username);
     }
 
     /*--------------------------------SubjectMaster-----------------------------------------*/
@@ -234,70 +179,48 @@ public class MasterController {
     @GetMapping("/SubjectMaster")
     public List<SubjectMaster> getAllSubjectMaster()
     {
-        return subjectMasterRepo.findAll();
+        return subjectMasterService.GetAllSubjects();
     }
 
     @PostMapping("/SubjectMaster")
-    public SubjectMaster AddNewSubjectMaster(@RequestBody SubjectMaster subjectMaster)
+    public ResponseEntity<?> AddNewSubjectMaster(@RequestBody SubjectMaster subjectMaster, @RequestParam String username)
     {
-        subjectMaster.setCreatedAt(LocalDateTime.now());
-        subjectMasterRepo.save(subjectMaster);
-        return subjectMaster;
+        return subjectMasterService.AddSubject(subjectMaster,username);
     }
 
     @PutMapping("/SubjectMaster")
-    public ResponseEntity<?> updateSubjectMaster(@RequestBody SubjectMaster subjectMaster){
-        boolean exist = subjectMasterRepo.existsById(subjectMaster.getId());
-        if (exist){
-            SubjectMaster dbuser = subjectMasterRepo.getById(subjectMaster.getId());
-            dbuser.setSubjectName(subjectMaster.getSubjectName());
-            dbuser.setSubjectAbb(subjectMaster.getSubjectAbb());
-            dbuser.setModifiedBy(subjectMaster.getModifiedBy());
-            dbuser.setModifiedAt(LocalDateTime.now());
-            subjectMasterRepo.save(dbuser);
-            return ResponseEntity.ok("modified");
-        }
-        return ResponseEntity.ok("failed");
+    public ResponseEntity<?> updateSubjectMaster(@RequestBody SubjectMaster subjectMaster, @RequestParam String username)
+    {
+        return subjectMasterService.UpdateSubject(subjectMaster,username);
     }
 
     @DeleteMapping("/SubjectMaster/{id}")
-    public void DeleteSubjectMaster(@PathVariable int id)
+    public ResponseEntity<?> DeleteSubjectMaster(@PathVariable int id, @RequestParam String username)
     {
-        subjectMasterRepo.deleteById(id);
+        return subjectMasterService.DeleteSubject(id,username);
     }
 
     /*--------------------------------TestMaster-----------------------------------------*/
 
     @GetMapping("/TestMaster")
     public List<TestMaster> getAllTestMaster(){
-        return testMasterRepo.findAll();
+        return testMasterService.GetAllTests();
     }
 
     @PostMapping("/TestMaster")
-    public TestMaster addTestMaster(@RequestBody TestMaster testMaster){
-        testMaster.setCreatedAt(LocalDateTime.now());
-        testMasterRepo.save(testMaster);
-        return testMaster;
+    public ResponseEntity addTestMaster(@RequestBody TestMaster testMaster, @RequestParam String username){
+        return testMasterService.AddTest(testMaster, username);
     }
 
     @DeleteMapping("/TestMaster/{id}")
-    public void deleteTestMaster(@PathVariable int id){
-        testMasterRepo.deleteById(id);
+    public ResponseEntity deleteTestMaster(@PathVariable int id, @RequestParam String username){
+        return testMasterService.DeleteTest(id, username);
     }
 
     @PutMapping("/TestMaster")
-    public ResponseEntity<?> updateTest(@RequestBody TestMaster testMaster){
-        boolean exist = testMasterRepo.existsById(testMaster.getId());
-        if (exist){
-            TestMaster dbuser = testMasterRepo.getById(testMaster.getId());
-            dbuser.setModifiedAt(LocalDateTime.now());
-            dbuser.setModifiedBy(testMaster.getModifiedBy());
-            dbuser.setMockTestName(testMaster.getMockTestName());
-            dbuser.setLastYearPaper(testMaster.getLastYearPaper());
-            testMasterRepo.save(dbuser);
-            return ResponseEntity.ok("Test Updated");
-        }
-        return ResponseEntity.ok("Failed to update");
+    public ResponseEntity<?> updateTest(@RequestBody TestMaster testMaster, @RequestParam String username){
+        return testMasterService.UpdateTest(testMaster,username);
     }
     /*------------------------------------------------------------------------------------*/
-}
+
+} //End MasterController
