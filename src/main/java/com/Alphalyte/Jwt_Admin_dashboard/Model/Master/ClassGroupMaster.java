@@ -23,9 +23,7 @@ public class ClassGroupMaster {
     private String ClassGroup;
     private String CreatedBy;
     private LocalDateTime CreatedAt;
-    @Nullable
     private String ModifiedBy;
-    @Nullable
     private LocalDateTime ModifiedAt;
 
 

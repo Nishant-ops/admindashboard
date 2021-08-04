@@ -52,6 +52,10 @@ public class UserMasterService {
             user.setPhone(u.getPhoneNumber());
             user.setEmail(u.getEmail());
             user.setBranch(u.getBranch());
+            user.setDateOfJoining(u.getDateOfJoining());
+            user.setLanguage(u.getLanguage());
+            user.setLocaladdress(u.getLocaladdress());
+            user.setPermanentaddress(u.getPermanentAddress());
             user.setCreatedAt(u.getCreatedat());
             user.setCreatedBy(u.getCreatedBY());
             user.setModifiedAt(u.getModifiedat());
@@ -117,16 +121,16 @@ public class UserMasterService {
 
 
         //Image format check
-        if (file != null){
-            String type = file.getContentType();
-            if ( (!file.isEmpty()) && ((type != null) && (type.equals("image/png") || type.equals("image/jpeg"))) ){
-                byte[] image = file.getBytes();
-                user.setImage(image);
-            }else {
-                System.out.println(file.getContentType());
-                return ResponseEntity.ok("Add a valid format image");
-            }
-        }
+//        if (file != null){
+//            String type = file.getContentType();
+//            if ( (!file.isEmpty()) && ((type != null) && (type.equals("image/png") || type.equals("image/jpeg"))) ){
+//                byte[] image = file.getBytes();
+//                user.setImage(image);
+//            }else {
+//                System.out.println(file.getContentType());
+//                return ResponseEntity.ok("Add a valid format image");
+//            }
+//        }
 
         System.out.println(user);
 
@@ -228,8 +232,9 @@ public class UserMasterService {
 
         //Image format check
         if (file != null){
-            String type = file.getContentType();
-            if ( (!file.isEmpty()) && ((type != null) && (type.equals("image/png") || type.equals("image/jpeg"))) ){
+           String type = file.getContentType();
+
+             if ( (!file.isEmpty()) && ((type != null) && (type.equals("image/png") || type.equals("image/jpeg"))) ){
                 byte[] image = file.getBytes();
                 user.setImage(image);
             }else {

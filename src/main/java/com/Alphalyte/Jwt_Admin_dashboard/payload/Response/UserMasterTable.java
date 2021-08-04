@@ -15,6 +15,10 @@ public class UserMasterTable {
     private long phone;
     private String email;
     private String branch;
+    private LocalDateTime DateOfJoining;
+    private String language;
+    private String localaddress;
+    private String permanentaddress;
     private LocalDateTime createdAt;
     private String createdBy;
     private LocalDateTime modifiedAt;
