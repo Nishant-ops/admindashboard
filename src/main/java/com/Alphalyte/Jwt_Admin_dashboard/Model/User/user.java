@@ -62,8 +62,7 @@ public class user implements UserDetails {
     private byte[] image;
 
     public byte[] getImage(int usercode, HttpServletResponse response) throws IOException {
-        byte[] image = userService.renderImageFromDb(usercode,response);
-        return image;
+        return userService.renderImageFromDb(usercode,response);
     }
 
     public void setPassword(String password) {

@@ -40,17 +40,15 @@ public class JwtUsernameandPasswordAuthenticationFilter {
         int id=userReposoritries.getUsercodeFromName(username);
         user user=userReposoritries.getById(id);
 
-        String token= Jwts.builder()
+        //System.out.println(token);
+
+        return Jwts.builder()
                 .setSubject(username)
                 .claim("authorities",user.getAuthorities())
                 .setIssuedAt(new Date())
                 .setExpiration(generateExperationDate())
                 .signWith(Keys.hmacShaKeyFor(key.getBytes()))
                 .compact();
-
-        //System.out.println(token);
-
-        return token;
     }
 
     public String getUsernameFromToken(String Token)
