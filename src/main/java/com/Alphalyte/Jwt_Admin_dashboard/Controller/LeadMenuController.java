@@ -27,11 +27,25 @@ public class LeadMenuController {
         return service.getAllLeads();
     }
 
-    @DeleteMapping(value="/lead/{usercode}")
-    public ResponseEntity<String> deletebyusercode(@PathVariable int usercode)
+    @DeleteMapping(value="/lead/{id}")
+    public ResponseEntity<String> deletebyusercode(@PathVariable String id)
     {
-        return service.deletebyid(usercode);
+        return service.deletebyid(id);
     }
 
+    @PutMapping(value = "/lead/{id}")
+    public ResponseEntity<String> updateLead(@PathVariable("id") String id, @RequestBody LeadForm lead){
+        return service.updateLead(id,lead);
+    }
+
+    @PutMapping("/lead/status/{id}")
+    public ResponseEntity<String> updateLeadStatus(@PathVariable("id") String id, @RequestBody String status){
+        return service.updateLeadStatus(id, status);
+    }
+
+    @PutMapping("/lead/assign/{id}")
+    public ResponseEntity<String> updateLeadAssign(@PathVariable("id") String id, @RequestBody int usercode){
+        return service.updateAssignTo(usercode, id);
+    }
 
 }
