@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 @Getter
 @Setter
@@ -15,7 +16,7 @@ public class UserMasterTable {
     private long phone;
     private String email;
     private String branch;
-    private LocalDateTime DateOfJoining;
+    private LocalDate DateOfJoining;
     private String language;
     private String localaddress;
     private String permanentaddress;

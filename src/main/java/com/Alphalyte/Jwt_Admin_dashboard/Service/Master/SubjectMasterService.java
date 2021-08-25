@@ -39,7 +39,7 @@ public class SubjectMasterService {
         //saving log
         UserLogReport userLogReport = new UserLogReport();
 
-        userLogReport.setUsercode(userRepo.getUsercodeFromName(username));
+//        userLogReport.setUsercode(userRepo.getUsercodeFromName(username));
         userLogReport.setUsername(username);
         userLogReport.setFormName("Subject Master");
         userLogReport.setLogType("Insert");

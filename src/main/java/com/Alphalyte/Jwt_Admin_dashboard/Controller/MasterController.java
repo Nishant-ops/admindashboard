@@ -181,6 +181,7 @@ public class MasterController {
     }
 
     @PostMapping("/SubjectMaster")
+    @PreAuthorize("hasAuthority('DEVELOPER')")
     public ResponseEntity<?> AddNewSubjectMaster(@RequestBody SubjectMaster subjectMaster, @RequestParam String username)
     {
         return subjectMasterService.AddSubject(subjectMaster,username);

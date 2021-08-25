@@ -15,6 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import javax.persistence.*;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -44,7 +45,7 @@ public class user implements UserDetails {
     private String username;
     private String password;
 
-    private LocalDateTime DateOfJoining;
+    private LocalDate DateOfJoining;
     private String localaddress;
     private String permanentAddress;
     private String branch;

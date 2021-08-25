@@ -2,6 +2,7 @@ package com.Alphalyte.Jwt_Admin_dashboard.payload.Request;
 
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @NoArgsConstructor
@@ -14,7 +15,7 @@ public class UserResquest {
     private String password;
     private String groupname;
     private String language;
-    private LocalDateTime DateOfJoining;
+    private LocalDate DateOfJoining;
     private String localaddress;
     private String permanentaddress;
     private String branch;

@@ -24,5 +24,13 @@ public class LeadForm {
     private String status;
     private String leadSource;
     private String remark;
+    private String board;
+    private String medium;
+    private String address;
+    private String country;
+    private String state;
+    private String city;
+    private String degree;
+    private String college;
 
 }

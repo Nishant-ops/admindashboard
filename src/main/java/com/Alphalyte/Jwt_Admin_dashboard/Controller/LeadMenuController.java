@@ -27,5 +27,11 @@ public class LeadMenuController {
         return service.getAllLeads();
     }
 
+    @DeleteMapping(value="/lead/{usercode}")
+    public ResponseEntity<String> deletebyusercode(@PathVariable int usercode)
+    {
+        return service.deletebyid(usercode);
+    }
+
 
 }

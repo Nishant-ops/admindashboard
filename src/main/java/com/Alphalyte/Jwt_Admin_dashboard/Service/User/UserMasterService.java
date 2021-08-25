@@ -116,9 +116,7 @@ public class UserMasterService {
         }else return ResponseEntity.ok("Modified-by cannot be null");
 
 
-        if (userRequest.getDateOfJoining() != null) {
-            user.setDateOfJoining(userRequest.getDateOfJoining());
-        } //else{ return ResponseEntity.ok("Date of joining cannot be null");}
+
 
 
         //Image format check
@@ -176,61 +174,63 @@ public class UserMasterService {
 
     public ResponseEntity<?> AddUser(UserResquest userRequest, MultipartFile file) throws IOException{
         user user = new user();
+       // System.out.println("data coming here 1");
         if (userRequest.getUsername() != null){
             user.setUsername(userRequest.getUsername());
         }else return ResponseEntity.ok("Username cannot be null");
 
-
+        //System.out.println("data coming here 2");
         Integer gid = userGroupMasterRepo.call(userRequest.getGroupname());
         if (gid == null){
             return ResponseEntity.ok("Invalid group name");
         }
+        //System.out.println("data coming here 3");
         boolean exists = userGroupMasterRepo.existsById(gid);
         if (exists) {
             user.setGroup_name(userGroupMasterRepo.getById(gid));
         }else return ResponseEntity.ok("Invalid group code");
-
+        //System.out.println("data coming here 4");
         if (userRequest.getPassword() != null){
             user.setPassword(userRequest.getPassword());
         }else return ResponseEntity.ok("Password cannot be null");
-
+       // System.out.println("data coming here 5");
         if (userRequest.getEmail() != null){
             user.setEmail(userRequest.getEmail());
         }else return ResponseEntity.ok("Email cannot be null");
 
-
+       // System.out.println("data coming here 6");
         if (userRequest.getPhone() > 6000000000L && userRequest.getPhone() < 9999999999L){
             user.setPhoneNumber(userRequest.getPhone());
         }else return ResponseEntity.ok("Invalid phone number");
 
-
+        //System.out.println("data coming here 7");
         user.setLocaladdress(userRequest.getLocaladdress());
 
-
+       // System.out.println("data coming here 8");
         if (userRequest.getPermanentaddress() != null) {
             user.setPermanentAddress(userRequest.getPermanentaddress());
         }else return ResponseEntity.ok("Permanent address cannot be null");
 
-
+        //System.out.println("data coming here 9");
         if (userRequest.getBranch() != null){
             user.setBranch(userRequest.getBranch());
         }else return ResponseEntity.ok("Branch cannot be null");
 
-
+        //System.out.println("data coming here 10");
         user.setLanguage(userRequest.getLanguage());
         user.setCreatedat(LocalDateTime.now());
 
-
+       // System.out.println("data coming here 11");
         if (userRequest.getCreatedby() != null) {
             user.setCreatedBY(userRequest.getCreatedby());
         }else return ResponseEntity.ok("Created-by cannot be null");
 
-
+        //System.out.println("data coming here");
         if (userRequest.getDateOfJoining() != null) {
             user.setDateOfJoining(userRequest.getDateOfJoining());
         } //else{ return ResponseEntity.ok("Date of joining cannot be null");}
 
-
+      //  System.out.println("data coming here 12");
         //Image format check
         if (file != null){
            String type = file.getContentType();
@@ -242,7 +242,7 @@ public class UserMasterService {
                 System.out.println(file.getContentType());
                 return ResponseEntity.ok("Add a valid format image");
             }
-        }
+        }//System.out.println("data coming here 13");
 
         userRepo.save(user);
 

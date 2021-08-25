@@ -82,8 +82,10 @@ public class AdminController {
 
 //  Add User
     @PostMapping(path = {"/users"}, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> addUser(@RequestPart(value = "user",required = true) UserResquest userResquest, @RequestParam(value = "file",required = true) MultipartFile file) throws IOException{
-      return userDetails.AddUser(userResquest,file);
+    public ResponseEntity<?> addUser(@RequestPart(value = "user",required = true) UserResquest userResquest, @RequestPart(value = "file",required = true) MultipartFile file) throws IOException{
+     System.out.println(file.getOriginalFilename());
+     System.out.println(file.getContentType());
+        return userDetails.AddUser(userResquest,file);
     }
 
 

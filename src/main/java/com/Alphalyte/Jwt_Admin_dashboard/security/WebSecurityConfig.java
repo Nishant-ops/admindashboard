@@ -62,7 +62,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authenticationEntryPoint(authenticationEntryPoint).and()
                .authorizeRequests()
                 .antMatchers("api/auth/**").permitAll()
-//                .antMatchers(HttpMethod.GET,"/users").hasAuthority("DEVELOPER")
+               // .antMatchers(HttpMethod.GET,"/users").hasAuthority("DEVELOPER")
                 //.antMatchers(HttpMethod.GET,"/usergroup").hasAuthority("DEVELOPER")
                 .and()
                 .addFilterBefore(new JwtTokenVerifier(jwtUsernameandPasswordAuthenticationFilter,adminDetailsService),

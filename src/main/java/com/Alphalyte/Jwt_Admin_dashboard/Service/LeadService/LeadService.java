@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -38,16 +39,31 @@ public class LeadService {
         dblead.setStatus(lead.getStatus());
         dblead.setLeadSource(lead.getLeadSource());
         dblead.setRemark(lead.getRemark());
+        dblead.setAddress(lead.getAddress());
+        dblead.setBoard(lead.getBoard());
+        dblead.setCity(lead.getCity());
+        dblead.setCollege(lead.getCollege());
+        dblead.setCountry(lead.getCountry());
+        dblead.setDegree(lead.getDegree());
+        dblead.setState(lead.getState());
+       dblead.setMedium(lead.getMedium());
 
         repo.save(dblead);
         return new ResponseEntity<>("Lead saved", HttpStatus.CREATED);
     }
 
 
-
-
     public ResponseEntity<List<Lead>> getAllLeads(){
         return new ResponseEntity<>(repo.findAll() , HttpStatus.OK);
     }
 
+    @Transactional
+    public ResponseEntity<String> deletebyid(int id)
+    {
+       Lead lead=repo.getById(id);
+       lead.setAssignTo(null);
+
+       repo.deleteById(id);
+        return new ResponseEntity<String>("user with usercode "+id+" is deleted",HttpStatus.OK);
+    }
 }
