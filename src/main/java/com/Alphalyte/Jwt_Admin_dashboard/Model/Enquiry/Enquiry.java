@@ -2,22 +2,25 @@ package com.Alphalyte.Jwt_Admin_dashboard.Model.Enquiry;
 
 
 import com.Alphalyte.Jwt_Admin_dashboard.Model.User.user;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Enquiry {
 
-    private int enquiryNum;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long enquiryNum;
+
     private String batch;
     private String firstName;
     private String lastName;
@@ -40,7 +43,7 @@ public class Enquiry {
     private String medium;
 
     private float grossAmount;
-    private float committedAmount;
+    private float comittedAmount;
     private float prevClassPercent;
     private LocalDate nextCallDate;
     private String fbLink;
@@ -52,7 +55,7 @@ public class Enquiry {
     private String careerObjective;
     private String remark;
 
-    public int getEnquiryNum() {
+    public long getEnquiryNum() {
         return enquiryNum;
     }
 
@@ -140,8 +143,8 @@ public class Enquiry {
         return grossAmount;
     }
 
-    public float getCommittedAmount() {
-        return committedAmount;
+    public float getComittedAmount() {
+        return comittedAmount;
     }
 
     public float getPrevClassPercent() {
