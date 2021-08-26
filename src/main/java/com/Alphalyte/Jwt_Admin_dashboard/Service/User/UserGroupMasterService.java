@@ -2,10 +2,9 @@ package com.Alphalyte.Jwt_Admin_dashboard.Service.User;
 
 import com.Alphalyte.Jwt_Admin_dashboard.Model.User.UserGroupMaster;
 import com.Alphalyte.Jwt_Admin_dashboard.Model.User.UserLogReport;
-import com.Alphalyte.Jwt_Admin_dashboard.Model.User.user;
 import com.Alphalyte.Jwt_Admin_dashboard.Reposoritries.User.UserGroupMasterRepo;
 import com.Alphalyte.Jwt_Admin_dashboard.Reposoritries.User.UserLogReportRepo;
-import com.Alphalyte.Jwt_Admin_dashboard.Reposoritries.User.UserReposoritries;
+import com.Alphalyte.Jwt_Admin_dashboard.Reposoritries.User.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -20,7 +19,7 @@ public class UserGroupMasterService {
     UserGroupMasterRepo userGroupMasterRepo;
 
     @Autowired
-    UserReposoritries userRepo;
+    UserRepository userRepo;
 
     @Autowired
     UserLogReportRepo userLogReportRepo;

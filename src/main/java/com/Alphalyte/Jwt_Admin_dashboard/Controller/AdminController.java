@@ -8,7 +8,7 @@ import com.Alphalyte.Jwt_Admin_dashboard.payload.Request.ResetPass;
 import com.Alphalyte.Jwt_Admin_dashboard.Model.User.UserGroupMaster;
 import com.Alphalyte.Jwt_Admin_dashboard.Model.User.user;
 import com.Alphalyte.Jwt_Admin_dashboard.Reposoritries.User.UserGroupMasterRepo;
-import com.Alphalyte.Jwt_Admin_dashboard.Reposoritries.User.UserReposoritries;
+import com.Alphalyte.Jwt_Admin_dashboard.Reposoritries.User.UserRepository;
 import com.Alphalyte.Jwt_Admin_dashboard.Service.User.UserMasterService;
 import com.Alphalyte.Jwt_Admin_dashboard.payload.Request.UserResquest;
 import com.Alphalyte.Jwt_Admin_dashboard.payload.Request.UserUpdateRequest;
@@ -17,14 +17,11 @@ import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -41,7 +38,7 @@ public class AdminController {
     UserGroupMasterService userGroupMasterService;
 
     @Autowired
-    UserReposoritries userRepo;
+    UserRepository userRepo;
 
     @Autowired
     UserGroupMasterRepo userGroupMasterRepo;

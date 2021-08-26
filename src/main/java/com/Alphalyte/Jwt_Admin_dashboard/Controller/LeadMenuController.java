@@ -7,7 +7,6 @@ import com.Alphalyte.Jwt_Admin_dashboard.Service.LeadService.LeadService;
 import com.Alphalyte.Jwt_Admin_dashboard.payload.Request.LeadForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.method.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,8 +18,6 @@ public class LeadMenuController {
     @Autowired
     LeadService service;
 
-    @Autowired
-    LeadRepo repo;
 
     @PostMapping(value = "/lead")
     public ResponseEntity<String> saveLead(@RequestBody LeadForm lead){

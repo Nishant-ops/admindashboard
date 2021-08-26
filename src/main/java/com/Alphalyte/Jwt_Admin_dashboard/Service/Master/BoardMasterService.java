@@ -4,7 +4,7 @@ import com.Alphalyte.Jwt_Admin_dashboard.Model.Master.BoardMaster;
 import com.Alphalyte.Jwt_Admin_dashboard.Model.User.UserLogReport;
 import com.Alphalyte.Jwt_Admin_dashboard.Reposoritries.Master.BoardMasterRepo;
 import com.Alphalyte.Jwt_Admin_dashboard.Reposoritries.User.UserLogReportRepo;
-import com.Alphalyte.Jwt_Admin_dashboard.Reposoritries.User.UserReposoritries;
+import com.Alphalyte.Jwt_Admin_dashboard.Reposoritries.User.UserRepository;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +20,7 @@ public class BoardMasterService {
     @Autowired
     BoardMasterRepo boardMasterRepo;
     @Autowired
-    UserReposoritries userRepo;
+    UserRepository userRepo;
     @Autowired
     UserLogReportRepo userLogReportRepo;
 

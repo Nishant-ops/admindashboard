@@ -1,12 +1,10 @@
 package com.Alphalyte.Jwt_Admin_dashboard.Service.Master;
 
-import com.Alphalyte.Jwt_Admin_dashboard.Model.Master.ClassGroupMaster;
 import com.Alphalyte.Jwt_Admin_dashboard.Model.Master.CourseMaster;
 import com.Alphalyte.Jwt_Admin_dashboard.Model.User.UserLogReport;
-import com.Alphalyte.Jwt_Admin_dashboard.Reposoritries.Master.ClassGroupMasterRepo;
 import com.Alphalyte.Jwt_Admin_dashboard.Reposoritries.Master.CourseMasterRepo;
 import com.Alphalyte.Jwt_Admin_dashboard.Reposoritries.User.UserLogReportRepo;
-import com.Alphalyte.Jwt_Admin_dashboard.Reposoritries.User.UserReposoritries;
+import com.Alphalyte.Jwt_Admin_dashboard.Reposoritries.User.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -24,7 +22,7 @@ public class CourseMasterService {
     CourseMasterRepo courseMasterRepo;
 
     @Autowired
-    UserReposoritries userRepo;
+    UserRepository userRepo;
 
     @Autowired
     UserLogReportRepo userLogReportRepo;

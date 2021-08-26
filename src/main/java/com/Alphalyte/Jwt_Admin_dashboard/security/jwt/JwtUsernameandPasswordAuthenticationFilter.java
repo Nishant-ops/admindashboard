@@ -1,7 +1,7 @@
 package com.Alphalyte.Jwt_Admin_dashboard.security.jwt;
 
 import com.Alphalyte.Jwt_Admin_dashboard.Model.User.user;
-import com.Alphalyte.Jwt_Admin_dashboard.Reposoritries.User.UserReposoritries;
+import com.Alphalyte.Jwt_Admin_dashboard.Reposoritries.User.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -15,7 +15,7 @@ import java.util.Date;
 @Component
 public class JwtUsernameandPasswordAuthenticationFilter {
 @Autowired
-    UserReposoritries userReposoritries;
+UserRepository userRepository;
     @Value("${Alphalyte.app.jwtSecret}")
     private String key;
     public Claims getAllClaimsFromJwtToken(String token)
@@ -37,8 +37,8 @@ public class JwtUsernameandPasswordAuthenticationFilter {
 
     public String generateToken(String username)
     {
-        int id=userReposoritries.getUsercodeFromName(username);
-        user user=userReposoritries.getById(id);
+        int id= userRepository.getUsercodeFromName(username);
+        user user= userRepository.getById(id);
 
         //System.out.println(token);
 
