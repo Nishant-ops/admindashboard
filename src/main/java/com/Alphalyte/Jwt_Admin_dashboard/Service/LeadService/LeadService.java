@@ -1,11 +1,14 @@
 package com.Alphalyte.Jwt_Admin_dashboard.Service.LeadService;
 
 
+import com.Alphalyte.Jwt_Admin_dashboard.Model.Lead.FollowUp;
 import com.Alphalyte.Jwt_Admin_dashboard.Model.Lead.Lead;
 import com.Alphalyte.Jwt_Admin_dashboard.Model.User.user;
 import com.Alphalyte.Jwt_Admin_dashboard.Reposoritries.Lead.LeadRepo;
+import com.Alphalyte.Jwt_Admin_dashboard.Reposoritries.Lead.followUp;
 import com.Alphalyte.Jwt_Admin_dashboard.Reposoritries.User.UserRepository;
 import com.Alphalyte.Jwt_Admin_dashboard.payload.Request.LeadForm;
+import com.Alphalyte.Jwt_Admin_dashboard.payload.Request.followUpRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +25,9 @@ public class LeadService {
 
     @Autowired
     UserRepository userRepo;
+
+    @Autowired
+    followUp followUpRepo;
 
 
     public ResponseEntity<String> saveLead(LeadForm lead){
@@ -139,6 +145,35 @@ public class LeadService {
         }
     }
 
+    public ResponseEntity<List<FollowUp>> getallFollowUps()
+    {
+        return new ResponseEntity<>(followUpRepo.findAll(),HttpStatus.OK);
+    }
+
+    public ResponseEntity<List<FollowUp>> getallFollowUpFromAssignUsercode(int usercode)
+    {
+        if(userRepo.existsById(usercode))
+        {
+            return new ResponseEntity<>(followUpRepo.getAllFollowUpFromUsercode(usercode)
+                    ,HttpStatus.OK);
+        }
+        else{
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+    public ResponseEntity<String> savefollowup(followUpRequest followUpRequest) {
+        user assignTo=userRepo.getById(followUpRequest.getUsercode());
+
+        FollowUp followUp=new FollowUp();
+        followUp.setDate(followUpRequest.getDate());
+        followUp.setAssignTo(assignTo);
+        followUp.setConversation(followUpRequest.getConversation());
+        followUp.setReason(followUpRequest.getReason());
+        followUp.setNextCallDate(followUpRequest.getNextCallDate());
+        followUp.setStatus(followUpRequest.getStatus());
+        followUpRepo.save(followUp);
 
 
+        return new ResponseEntity<>("FollowUp created",HttpStatus.CREATED);
+    }
 }//end class
