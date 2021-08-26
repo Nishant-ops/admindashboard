@@ -83,9 +83,16 @@ public class LeadService {
 
             user assignTo = userRepo.getById(lead.getUsercode());
 
+            if(lead.getName()!=null) {
+                dblead.setName(lead.getName());
+            }else
+                return new ResponseEntity<>("name is cannot be null",HttpStatus.BAD_REQUEST);
 
-            dblead.setName(lead.getName());
-            dblead.setGender(lead.getGender());
+            if(lead.getGender()!=null && (lead.getGender().equals("Male")||lead.getGender().equals("Female"))) {
+                dblead.setGender(lead.getGender());
+            }else
+                return new ResponseEntity<>("gender is null or not correct",HttpStatus.BAD_REQUEST);
+
             dblead.setMobile(lead.getMobile());
             dblead.setEmail(lead.getEmail());
             dblead.setDate(lead.getDate());
@@ -169,6 +176,7 @@ public class LeadService {
         }
     }
     public ResponseEntity<String> savefollowup(followUpRequest followUpRequest) {
+
         user assignTo=userRepo.getById(followUpRequest.getUsercode());
 
         FollowUp followUp=new FollowUp();
@@ -182,5 +190,33 @@ public class LeadService {
 
 
         return new ResponseEntity<>("FollowUp created",HttpStatus.CREATED);
+    }
+
+    public ResponseEntity<String> deteleFollowup(String id)
+    {
+        if(followUpRepo.existsById(id))
+        {
+            followUpRepo.deleteById(id);
+            return new ResponseEntity<>("Follow Up Deleted",HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    public ResponseEntity<String> updateFollowUp(String id,followUpRequest followUpRequest) {
+        if(followUpRepo.existsById(id))
+        {
+            FollowUp followUp=followUpRepo.getById(id);
+            user user=userRepo.getById(followUpRequest.getUsercode());
+            followUp.setDate(followUpRequest.getDate());
+            followUp.setStatus(followUpRequest.getStatus());
+            followUp.setConversation(followUp.getConversation());
+            followUp.setNextCallDate(followUpRequest.getNextCallDate());
+            followUp.setAssignTo(user);
+            followUp.setReason(followUpRequest.getReason());
+
+            return new ResponseEntity<>("FollowUp Updated",HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }//end class

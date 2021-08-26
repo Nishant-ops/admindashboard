@@ -74,4 +74,18 @@ public class LeadMenuController {
     {
         return service.savefollowup(followUpRequest);
     }
+
+
+    //TODO: check in postman
+    @DeleteMapping("/lead/followUp/{id}")
+    public ResponseEntity<String> deleteFollowUp(@PathVariable("id") String id)
+    {
+        return service.deteleFollowup(id);
+    }
+
+    @PutMapping("/lead/followUp/{id}")
+    public ResponseEntity<String> updateFollowUp(@PathVariable("id") String id , @RequestBody followUpRequest followUpRequest)
+    {
+        return service.updateFollowUp(id,followUpRequest);
+    }
 }
