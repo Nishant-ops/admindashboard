@@ -1,10 +1,12 @@
 package com.Alphalyte.Jwt_Admin_dashboard.Controller;
 
 
+import com.Alphalyte.Jwt_Admin_dashboard.Model.Lead.FollowUp;
 import com.Alphalyte.Jwt_Admin_dashboard.Model.Lead.Lead;
 import com.Alphalyte.Jwt_Admin_dashboard.Reposoritries.Lead.LeadRepo;
 import com.Alphalyte.Jwt_Admin_dashboard.Service.LeadService.LeadService;
 import com.Alphalyte.Jwt_Admin_dashboard.payload.Request.LeadForm;
+import com.Alphalyte.Jwt_Admin_dashboard.payload.Request.followUpRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -56,4 +58,20 @@ public class LeadMenuController {
         return service.getallLeadsFromAssignUsercode(id);
     }
 
+    @GetMapping("/lead/followUp")
+    public ResponseEntity<List<FollowUp>> getallFollowUps()
+    {
+        return service.getallFollowUps();
+    }
+
+    @GetMapping("/lead/followUp/{usercode}")
+    public ResponseEntity<List<FollowUp>> getallFollowupsFromUsercode(@PathVariable("usercode") int usercode)
+    {
+        return service.getallFollowUpFromAssignUsercode(usercode);
+    }
+    @PostMapping("/lead/followUp")
+    public ResponseEntity<String> saveFollowUp(@RequestBody followUpRequest followUpRequest)
+    {
+        return service.savefollowup(followUpRequest);
+    }
 }
