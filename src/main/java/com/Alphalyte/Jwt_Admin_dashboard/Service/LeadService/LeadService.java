@@ -23,6 +23,7 @@ public class LeadService {
     @Autowired
     UserReposoritries userRepo;
 
+
     public ResponseEntity<String> saveLead(LeadForm lead){
 
         user assignTo = userRepo.getById(lead.getUsercode());
@@ -124,6 +125,18 @@ public class LeadService {
         }
         else return new ResponseEntity<>("NOT FOUND", HttpStatus.NOT_FOUND);
 
+    }
+
+    public ResponseEntity<List<Lead>> getallLeadsFromAssignUsercode(int usercode)
+    {
+        if(userRepo.existsById(usercode))
+        {
+            return new ResponseEntity<>(repo.getAllLeadsAssignToUsercode(usercode)
+            ,HttpStatus.OK);
+        }
+        else{
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
 

@@ -2,10 +2,12 @@ package com.Alphalyte.Jwt_Admin_dashboard.Controller;
 
 
 import com.Alphalyte.Jwt_Admin_dashboard.Model.Lead.Lead;
+import com.Alphalyte.Jwt_Admin_dashboard.Reposoritries.Lead.LeadRepo;
 import com.Alphalyte.Jwt_Admin_dashboard.Service.LeadService.LeadService;
 import com.Alphalyte.Jwt_Admin_dashboard.payload.Request.LeadForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.method.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,6 +18,9 @@ public class LeadMenuController {
 
     @Autowired
     LeadService service;
+
+    @Autowired
+    LeadRepo repo;
 
     @PostMapping(value = "/lead")
     public ResponseEntity<String> saveLead(@RequestBody LeadForm lead){
@@ -28,7 +33,7 @@ public class LeadMenuController {
     }
 
     @DeleteMapping(value="/lead/{id}")
-    public ResponseEntity<String> deletebyusercode(@PathVariable String id)
+    public ResponseEntity<String> deletebyusercode(@PathVariable("id") String id)
     {
         return service.deletebyid(id);
     }
@@ -46,6 +51,12 @@ public class LeadMenuController {
     @PutMapping("/lead/assign/{id}")
     public ResponseEntity<String> updateLeadAssign(@PathVariable("id") String id, @RequestBody int usercode){
         return service.updateAssignTo(usercode, id);
+    }
+
+    @GetMapping("/lead/assign/{usercode}")
+    public ResponseEntity<List<Lead>> getallLeadsAssigntousercode(@PathVariable("usercode") int id)
+    {
+        return service.getallLeadsFromAssignUsercode(id);
     }
 
 }
