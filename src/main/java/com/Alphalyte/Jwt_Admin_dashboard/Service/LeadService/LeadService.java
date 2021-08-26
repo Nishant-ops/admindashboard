@@ -5,7 +5,7 @@ import com.Alphalyte.Jwt_Admin_dashboard.Model.Lead.FollowUp;
 import com.Alphalyte.Jwt_Admin_dashboard.Model.Lead.Lead;
 import com.Alphalyte.Jwt_Admin_dashboard.Model.User.user;
 import com.Alphalyte.Jwt_Admin_dashboard.Reposoritries.Lead.LeadRepo;
-import com.Alphalyte.Jwt_Admin_dashboard.Reposoritries.Lead.followUp;
+import com.Alphalyte.Jwt_Admin_dashboard.Reposoritries.Lead.FollowupRepo;
 import com.Alphalyte.Jwt_Admin_dashboard.Reposoritries.User.UserRepository;
 import com.Alphalyte.Jwt_Admin_dashboard.payload.Request.LeadForm;
 import com.Alphalyte.Jwt_Admin_dashboard.payload.Request.followUpRequest;
@@ -27,7 +27,7 @@ public class LeadService {
     UserRepository userRepo;
 
     @Autowired
-    followUp followUpRepo;
+    FollowupRepo followUpRepo;
 
 
     public ResponseEntity<String> saveLead(LeadForm lead){
