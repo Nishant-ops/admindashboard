@@ -20,6 +20,8 @@ import java.time.LocalDate;
 @Table(name = "Leads")
 public class Lead {
 
+    //TODO:Add upload file $ Multipart request.
+
     @Autowired
     @Transient
     UserRepository userRepo;

@@ -270,12 +270,12 @@ public class LeadService {
         }
     }
 
-    public ResponseEntity<List<FollowUp>> getallFollowUps()
+    public ResponseEntity<List<FollowUp>> getAllFollowUps()
     {
         return new ResponseEntity<>(followUpRepo.findAll(),HttpStatus.OK);
     }
 
-    public ResponseEntity<List<FollowUp>> getallFollowUpFromAssignUsercode(int usercode)
+    public ResponseEntity<List<FollowUp>> getAllFollowUpFromAssignUsercode(int usercode)
     {
         if(userRepo.existsById(usercode))
         {
@@ -287,7 +287,7 @@ public class LeadService {
         }
     }
 
-    public ResponseEntity<?> getFollowUpFromid(String uid) {
+    public ResponseEntity<?> getFollowUpFromId(String uid) {
         if(followUpRepo.existsById(uid))
         {
             return new ResponseEntity<>(followUpRepo.getById(uid),HttpStatus.OK);
@@ -295,24 +295,31 @@ public class LeadService {
         return new ResponseEntity<>("uid does not exist by uid",HttpStatus.BAD_REQUEST);
     }
 
-    public ResponseEntity<String> savefollowup(followUpRequest followUpRequest) {
-
-        user assignTo=userRepo.getById(followUpRequest.getUsercode());
+    public ResponseEntity<String> addFollowUp(followUpRequest followUpRequest) {
 
         FollowUp followUp=new FollowUp();
+
+        if (userRepo.existsById(followUpRequest.getUsercode())) {
+
+            user user = userRepo.getById(followUpRequest.getUsercode());
+            followUp.setAssignTo(user);
+
+        } else return new ResponseEntity<>("Invalid usercode", HttpStatus.NOT_FOUND);
+
+
         followUp.setDate(followUpRequest.getDate());
-        followUp.setAssignTo(assignTo);
         followUp.setConversation(followUpRequest.getConversation());
         followUp.setReason(followUpRequest.getReason());
         followUp.setNextCallDate(followUpRequest.getNextCallDate());
         followUp.setStatus(followUpRequest.getStatus());
+
         followUpRepo.save(followUp);
 
 
         return new ResponseEntity<>("FollowUp created",HttpStatus.CREATED);
     }
 
-    public ResponseEntity<String> deteleFollowup(String id)
+    public ResponseEntity<String> deleteFollowUp(String id)
     {
         if(followUpRepo.existsById(id))
         {
@@ -326,14 +333,20 @@ public class LeadService {
     public ResponseEntity<String> updateFollowUp(String id,followUpRequest followUpRequest) {
         if(followUpRepo.existsById(id))
         {
-            FollowUp followUp=followUpRepo.getById(id);
-            user user=userRepo.getById(followUpRequest.getUsercode());
+            FollowUp followUp = followUpRepo.getById(id);
+
+            if (userRepo.existsById(followUpRequest.getUsercode())) {
+                user user = userRepo.getById(followUpRequest.getUsercode());
+                followUp.setAssignTo(user);
+            } else return new ResponseEntity<>("Invalid usercode", HttpStatus.NOT_FOUND);
+
             followUp.setDate(followUpRequest.getDate());
             followUp.setStatus(followUpRequest.getStatus());
             followUp.setConversation(followUp.getConversation());
             followUp.setNextCallDate(followUpRequest.getNextCallDate());
-            followUp.setAssignTo(user);
             followUp.setReason(followUpRequest.getReason());
+
+            followUpRepo.save(followUp);
 
             return new ResponseEntity<>("FollowUp Updated",HttpStatus.OK);
         }

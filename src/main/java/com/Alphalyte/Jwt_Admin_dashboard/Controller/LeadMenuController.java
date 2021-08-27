@@ -53,7 +53,7 @@ public class LeadMenuController {
     }
 
     @GetMapping("/lead/assign/{usercode}")
-    public ResponseEntity<List<Lead>> getallLeadsAssigntousercode(@PathVariable("usercode") int id)
+    public ResponseEntity<List<Lead>> getAllLeadsAssignToUsercode(@PathVariable("usercode") int id)
     {
         return service.getallLeadsFromAssignUsercode(id);
     }
@@ -61,25 +61,25 @@ public class LeadMenuController {
     @GetMapping("/lead/followUp")
     public ResponseEntity<List<FollowUp>> getallFollowUps()
     {
-        return service.getallFollowUps();
+        return service.getAllFollowUps();
     }
 
 
     @GetMapping("/lead/followUp/{usercode}")
-    public ResponseEntity<List<FollowUp>> getallFollowupsFromUsercode(@PathVariable("usercode") int usercode)
+    public ResponseEntity<List<FollowUp>> getAllFollowupsFromUsercode(@PathVariable("usercode") int usercode)
     {
-        return service.getallFollowUpFromAssignUsercode(usercode);
+        return service.getAllFollowUpFromAssignUsercode(usercode);
     }
 
     @GetMapping("/lead/followUp/{id}")
     public ResponseEntity<?> getFollowUpById(@PathVariable("id") String uid)
     {
-        return service.getFollowUpFromid(uid);
+        return service.getFollowUpFromId(uid);
     }
     @PostMapping("/lead/followUp")
     public ResponseEntity<String> saveFollowUp(@RequestBody followUpRequest followUpRequest)
     {
-        return service.savefollowup(followUpRequest);
+        return service.addFollowUp(followUpRequest);
     }
 
 
@@ -87,7 +87,7 @@ public class LeadMenuController {
     @DeleteMapping("/lead/followUp/{id}")
     public ResponseEntity<String> deleteFollowUp(@PathVariable("id") String id)
     {
-        return service.deteleFollowup(id);
+        return service.deleteFollowUp(id);
     }
 
     @PutMapping("/lead/followUp/{id}")
@@ -98,7 +98,7 @@ public class LeadMenuController {
     @DeleteMapping("/lead/followUp/{id}")
     public ResponseEntity<String> delteById(@PathVariable("id") String id)
     {
-        return service.deteleFollowup(id);
+        return service.deletebyid(id);
     }
 
     @PutMapping("/lead/followUp/{id}")
