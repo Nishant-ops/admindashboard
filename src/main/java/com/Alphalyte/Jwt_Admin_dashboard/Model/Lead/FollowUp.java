@@ -3,12 +3,10 @@ package com.Alphalyte.Jwt_Admin_dashboard.Model.Lead;
 import com.Alphalyte.Jwt_Admin_dashboard.Model.User.user;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -37,12 +35,16 @@ public class FollowUp {
     private LocalDate date;
 
     @OneToOne(cascade = CascadeType.MERGE)
-    private user assignTo;
+    private Lead lead;
+
+    @OneToOne(cascade = CascadeType.MERGE)
+    private user followUpBy;
 
     private LocalDate nextCallDate;
     private String status;
     private String reason;
     private String conversation;
+
 
     public String getId() {
         return id;
@@ -52,8 +54,12 @@ public class FollowUp {
         return date;
     }
 
-    public String getAssignTo() {
-        return assignTo.getUsername();
+    public String getLead() {
+        return lead.getName();
+    }
+
+    public String getFollowUpBy() {
+        return followUpBy.getUsername();
     }
 
     public LocalDate getNextCallDate() {

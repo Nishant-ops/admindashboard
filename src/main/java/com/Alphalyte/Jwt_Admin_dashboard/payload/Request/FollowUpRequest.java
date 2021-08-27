@@ -10,8 +10,9 @@ import java.time.LocalDate;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class followUpRequest {
+public class FollowUpRequest {
     private LocalDate date;
+    private String leadId;
     private int usercode;
     private LocalDate nextCallDate;
     private String status;
