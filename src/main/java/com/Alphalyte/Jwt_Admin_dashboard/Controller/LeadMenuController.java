@@ -7,6 +7,8 @@ import com.Alphalyte.Jwt_Admin_dashboard.Reposoritries.Lead.LeadRepo;
 import com.Alphalyte.Jwt_Admin_dashboard.Service.LeadService.LeadService;
 import com.Alphalyte.Jwt_Admin_dashboard.payload.Request.LeadForm;
 import com.Alphalyte.Jwt_Admin_dashboard.payload.Request.followUpRequest;
+import com.Alphalyte.Jwt_Admin_dashboard.payload.Response.follow_up_Response;
+import com.Alphalyte.Jwt_Admin_dashboard.payload.Response.leadResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +29,7 @@ public class LeadMenuController {
     }
 
     @GetMapping(value = "/lead")
-    public ResponseEntity<List<Lead>> getAllLeads(){
+    public ResponseEntity<List<leadResponse>> getAllLeads(){
         return service.getAllLeads();
     }
 
@@ -53,29 +55,30 @@ public class LeadMenuController {
     }
 
     @GetMapping("/lead/assign/{usercode}")
-    public ResponseEntity<List<Lead>> getAllLeadsAssignToUsercode(@PathVariable("usercode") int id)
+    public ResponseEntity<List<leadResponse>> getAllLeadsAssignToUsercode(@PathVariable("usercode") int id)
     {
         return service.getallLeadsFromAssignUsercode(id);
     }
 
     @GetMapping("/lead/followUp")
-    public ResponseEntity<List<FollowUp>> getallFollowUps()
+    public ResponseEntity<List<follow_up_Response>> getallFollowUps()
     {
         return service.getAllFollowUps();
     }
 
 
     @GetMapping("/lead/followUp/{usercode}")
-    public ResponseEntity<List<FollowUp>> getAllFollowupsFromUsercode(@PathVariable("usercode") int usercode)
+    public ResponseEntity<List<follow_up_Response>> getAllFollowupsFromUsercode(@PathVariable("usercode") int usercode)
     {
         return service.getAllFollowUpFromAssignUsercode(usercode);
     }
 
-    @GetMapping("/lead/followUp/{id}")
+    @GetMapping("/lead/followUpBy/{id}")
     public ResponseEntity<?> getFollowUpById(@PathVariable("id") String uid)
     {
         return service.getFollowUpFromId(uid);
     }
+
     @PostMapping("/lead/followUp")
     public ResponseEntity<String> saveFollowUp(@RequestBody followUpRequest followUpRequest)
     {
@@ -95,17 +98,6 @@ public class LeadMenuController {
     {
         return service.updateFollowUp(id,followUpRequest);
     }
-    @DeleteMapping("/lead/followUp/{id}")
-    public ResponseEntity<String> delteById(@PathVariable("id") String id)
-    {
-        return service.deletebyid(id);
-    }
 
-    @PutMapping("/lead/followUp/{id}")
-    public ResponseEntity<String> FollowUpate(@PathVariable("id") String uid,
-                                              @RequestBody followUpRequest followUpRequest)
-    {
-        return service.updateFollowUp(uid,followUpRequest);
-    }
 
 }

@@ -39,6 +39,7 @@ public class FollowUp {
     @OneToOne(cascade = CascadeType.MERGE)
     private user assignTo;
 
+
     private LocalDate nextCallDate;
     private String status;
     private String reason;
@@ -55,6 +56,7 @@ public class FollowUp {
     public String getAssignTo() {
         return assignTo.getUsername();
     }
+
 
     public LocalDate getNextCallDate() {
         return nextCallDate;

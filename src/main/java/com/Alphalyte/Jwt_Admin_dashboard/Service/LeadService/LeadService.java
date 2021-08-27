@@ -9,12 +9,15 @@ import com.Alphalyte.Jwt_Admin_dashboard.Reposoritries.Lead.FollowupRepo;
 import com.Alphalyte.Jwt_Admin_dashboard.Reposoritries.User.UserRepository;
 import com.Alphalyte.Jwt_Admin_dashboard.payload.Request.LeadForm;
 import com.Alphalyte.Jwt_Admin_dashboard.payload.Request.followUpRequest;
+import com.Alphalyte.Jwt_Admin_dashboard.payload.Response.follow_up_Response;
+import com.Alphalyte.Jwt_Admin_dashboard.payload.Response.leadResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -33,9 +36,6 @@ public class LeadService {
     public ResponseEntity<String> saveLead(LeadForm lead){
 
         user assignTo = userRepo.getById(lead.getUsercode());
-
-
-
 
             Lead dblead = new Lead();
             if(lead.getName()!=null) {
@@ -119,8 +119,28 @@ public class LeadService {
         }
 
 
-    public ResponseEntity<List<Lead>> getAllLeads(){
-        return new ResponseEntity<>(repo.findAll() , HttpStatus.OK);
+    public ResponseEntity<List<leadResponse>> getAllLeads(){
+
+        List<leadResponse> leadResponses=new ArrayList<>();
+        for(Lead lead : repo.findAll()) {
+            leadResponse leadResponse = new leadResponse();
+            leadResponse.setUid(lead.getId());
+            leadResponse.setName(lead.getName());
+            leadResponse.setCreated_date(lead.getDate());
+            leadResponse.setAddress(lead.getAddress());
+            leadResponse.setEmail(lead.getEmail());
+            leadResponse.setCollege(lead.getCollege());
+            leadResponse.setDegree(lead.getDegree());
+            leadResponse.setContact(lead.getMobile());
+            leadResponse.setCourse("English");
+            leadResponse.setStatus(lead.getStatus());
+            leadResponse.setRef(lead.getLeadSource());
+            leadResponse.setAssignTo(lead.getAssignTo());
+            leadResponse.setLast_Follow_Up("don;t know");
+            leadResponse.setTotal_Follow_Up(2);
+            leadResponses.add(leadResponse);
+        }
+        return new ResponseEntity<>(leadResponses,HttpStatus.OK);
     }
 
 
@@ -258,29 +278,76 @@ public class LeadService {
 
     }
 
-    public ResponseEntity<List<Lead>> getallLeadsFromAssignUsercode(int usercode)
+    public ResponseEntity<List<leadResponse>> getallLeadsFromAssignUsercode(int usercode)
     {
-        if(userRepo.existsById(usercode))
-        {
-            return new ResponseEntity<>(repo.getAllLeadsAssignToUsercode(usercode)
-            ,HttpStatus.OK);
-        }
+        System.out.println(usercode);
+        if(userRepo.existsById(usercode)) {
+
+            List<leadResponse> leadResponses = new ArrayList<>();
+            for (Lead lead : repo.getAllLeadsAssignToUsercode(usercode)) {
+                leadResponse leadResponse = new leadResponse();
+                leadResponse.setUid(lead.getId());
+                leadResponse.setName(lead.getName());
+                leadResponse.setCreated_date(lead.getDate());
+                leadResponse.setAddress(lead.getAddress());
+                leadResponse.setEmail(lead.getEmail());
+                leadResponse.setCollege(lead.getCollege());
+                leadResponse.setDegree(lead.getDegree());
+                leadResponse.setContact(lead.getMobile());
+                leadResponse.setCourse("English");
+                leadResponse.setStatus(lead.getStatus());
+                leadResponse.setRef(lead.getLeadSource());
+                leadResponse.setAssignTo(lead.getAssignTo());
+                leadResponse.setLast_Follow_Up("don;t know");
+                leadResponse.setTotal_Follow_Up(2);
+                leadResponses.add(leadResponse);
+            }
+                return new ResponseEntity<>(leadResponses, HttpStatus.OK);
+            }
+
         else{
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
-    public ResponseEntity<List<FollowUp>> getAllFollowUps()
+    public ResponseEntity<List<follow_up_Response>> getAllFollowUps()
     {
-        return new ResponseEntity<>(followUpRepo.findAll(),HttpStatus.OK);
+        List<follow_up_Response> follow_up_responses=new ArrayList<>();
+        for(FollowUp followUp : followUpRepo.findAll())
+        {
+          follow_up_Response follow_up_response=new follow_up_Response();
+          follow_up_response.setUid(followUp.getId());
+          follow_up_response.setByUser(followUp.getAssignTo());
+          follow_up_response.setNext_Call_Date(followUp.getNextCallDate());
+          follow_up_response.setDate(followUp.getDate());
+          follow_up_response.setContact(9711156783L);
+          follow_up_response.setCourse("english");
+         follow_up_response.setName("nishant");
+         follow_up_responses.add(follow_up_response);
+
+        }
+        return new ResponseEntity<>(follow_up_responses,HttpStatus.OK);
     }
 
-    public ResponseEntity<List<FollowUp>> getAllFollowUpFromAssignUsercode(int usercode)
+    public ResponseEntity<List<follow_up_Response>> getAllFollowUpFromAssignUsercode(int usercode)
     {
         if(userRepo.existsById(usercode))
         {
-            return new ResponseEntity<>(followUpRepo.getAllFollowUpFromUsercode(usercode)
-                    ,HttpStatus.OK);
+            List<follow_up_Response> follow_up_responses=new ArrayList<>();
+            for(FollowUp followUp : followUpRepo.getAllFollowUpFromUsercode(usercode))
+            {
+                follow_up_Response follow_up_response=new follow_up_Response();
+                follow_up_response.setUid(followUp.getId());
+                follow_up_response.setByUser(followUp.getAssignTo());
+                follow_up_response.setNext_Call_Date(followUp.getNextCallDate());
+                follow_up_response.setDate(followUp.getDate());
+                follow_up_response.setContact(9711156783L);
+                follow_up_response.setCourse("english");
+                follow_up_response.setName("nishant");
+                follow_up_responses.add(follow_up_response);
+
+            }
+            return new ResponseEntity<>(follow_up_responses,HttpStatus.OK);
         }
         else{
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
