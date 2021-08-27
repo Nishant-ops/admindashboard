@@ -7,14 +7,18 @@ import com.Alphalyte.Jwt_Admin_dashboard.Model.User.user;
 import com.Alphalyte.Jwt_Admin_dashboard.Reposoritries.Lead.LeadRepo;
 import com.Alphalyte.Jwt_Admin_dashboard.Reposoritries.Lead.FollowupRepo;
 import com.Alphalyte.Jwt_Admin_dashboard.Reposoritries.User.UserRepository;
-import com.Alphalyte.Jwt_Admin_dashboard.payload.Request.LeadForm;
 import com.Alphalyte.Jwt_Admin_dashboard.payload.Request.FollowUpRequest;
+import com.Alphalyte.Jwt_Admin_dashboard.payload.Request.LeadForm;
+import com.Alphalyte.Jwt_Admin_dashboard.payload.Response.followUpResponse;
+import com.Alphalyte.Jwt_Admin_dashboard.payload.Response.leadResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -29,13 +33,10 @@ public class LeadService {
     @Autowired
     FollowupRepo followUpRepo;
 
-
+    /*----------------------------------------------------Saving a lead-----------------------------------------------------------------*/
     public ResponseEntity<String> saveLead(LeadForm lead){
 
         user assignTo = userRepo.getById(lead.getUsercode());
-
-
-
 
             Lead dblead = new Lead();
             if(lead.getName()!=null) {
@@ -118,12 +119,32 @@ public class LeadService {
             return new ResponseEntity<>("Lead saved", HttpStatus.CREATED);
         }
 
+    /*----------------------------------------------------Getting all Leads-----------------------------------------------------------------*/
+    public ResponseEntity<List<leadResponse>> getAllLeads(){
 
-    public ResponseEntity<List<Lead>> getAllLeads(){
-        return new ResponseEntity<>(leadRepo.findAll() , HttpStatus.OK);
+        List<leadResponse> leadResponses=new ArrayList<>();
+        for(Lead lead : leadRepo.findAll()) {
+            leadResponse leadResponse = new leadResponse();
+            leadResponse.setUid(lead.getId());
+            leadResponse.setName(lead.getName());
+            leadResponse.setCreatedDate(lead.getDate());
+            leadResponse.setAddress(lead.getAddress());
+            leadResponse.setEmail(lead.getEmail());
+            leadResponse.setCollege(lead.getCollege());
+            leadResponse.setDegree(lead.getDegree());
+            leadResponse.setContact(lead.getMobile());
+            leadResponse.setCourse("English");
+            leadResponse.setStatus(lead.getStatus());
+            leadResponse.setRef(lead.getLeadSource());
+            leadResponse.setAssignTo(lead.getAssignTo());
+            leadResponse.setLastFollowUp(lead.getDate());
+            leadResponse.setTotalFollowUp((Integer) getCountFollowUpFromLeadId(lead.getId()));
+            leadResponses.add(leadResponse);
+        }
+        return new ResponseEntity<>(leadResponses,HttpStatus.OK);
     }
 
-
+    /*----------------------------------------------------Delete a Lead-----------------------------------------------------------------*/
     @Transactional
     public ResponseEntity<String> deletebyid(String id) {
        if (leadRepo.existsById(id)) {
@@ -134,7 +155,7 @@ public class LeadService {
        }
        else return new ResponseEntity<>("NOT FOUND", HttpStatus.NOT_FOUND);
     }
-
+    /*----------------------------------------------------Updating a lead-----------------------------------------------------------------*/
 
     public ResponseEntity<String> updateLead(String id , LeadForm lead){
         if (leadRepo.existsById(id)) {
@@ -228,13 +249,7 @@ public class LeadService {
         }
         else return new ResponseEntity<>("NOT FOUND", HttpStatus.NOT_FOUND);
     }
-
-
-
-
-
-
-
+    /*----------------------------------------------------Updating a lead Status-----------------------------------------------------------------*/
 
     @Transactional
     public ResponseEntity<String> updateLeadStatus(String uuid, String status){
@@ -245,7 +260,7 @@ public class LeadService {
         }
         else return new ResponseEntity<>("NOT FOUND", HttpStatus.NOT_FOUND);
     }
-
+    /*----------------------------------------------------Updating a lead Assign-----------------------------------------------------------------*/
     @Transactional
     public ResponseEntity<String> updateAssignTo(int usercode, String uuid){
         if (leadRepo.existsById(uuid)){
@@ -256,64 +271,104 @@ public class LeadService {
         }
         else return new ResponseEntity<>("NOT FOUND", HttpStatus.NOT_FOUND);
 
-    }
+    }/*----------------------------------------------------Get all leads from Assign usercode -----------------------------------------------------------------*/
 
-    public ResponseEntity<List<Lead>> getallLeadsFromAssignUsercode(int usercode)
+    public ResponseEntity<List<leadResponse>> getallLeadsFromAssignUsercode(int usercode)
     {
-        if(userRepo.existsById(usercode))
-        {
-            return new ResponseEntity<>(leadRepo.getAllLeadsAssignToUsercode(usercode)
-            ,HttpStatus.OK);
-        }
+        System.out.println(usercode);
+        if(userRepo.existsById(usercode)) {
+
+            List<leadResponse> leadResponses = new ArrayList<>();
+            for (Lead lead : leadRepo.getAllLeadsAssignToUsercode(usercode)) {
+                leadResponse leadResponse = new leadResponse();
+                leadResponse.setUid(lead.getId());
+                leadResponse.setName(lead.getName());
+                leadResponse.setCreatedDate(lead.getDate());
+                leadResponse.setAddress(lead.getAddress());
+                leadResponse.setEmail(lead.getEmail());
+                leadResponse.setCollege(lead.getCollege());
+                leadResponse.setDegree(lead.getDegree());
+                leadResponse.setContact(lead.getMobile());
+                leadResponse.setCourse("English");
+                leadResponse.setStatus(lead.getStatus());
+                leadResponse.setRef(lead.getLeadSource());
+                leadResponse.setAssignTo(lead.getAssignTo());
+                leadResponse.setLastFollowUp(LocalDate.now());
+                leadResponse.setTotalFollowUp( getCountFollowUpFromLeadId(lead.getId()));
+                leadResponses.add(leadResponse);
+            }
+                return new ResponseEntity<>(leadResponses, HttpStatus.OK);
+            }
+
         else{
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-
-
-
-
-    /*-----------------------------------------FOLLOW UP------------------------------------------------*/
-
-    public ResponseEntity<List<FollowUp>> getAllFollowUps()
+    /*----------------------------------------------------Getting all FollowUp-----------------------------------------------------------------*/
+    public ResponseEntity<List<followUpResponse>> getAllFollowUps()
     {
-        return new ResponseEntity<>(followUpRepo.findAll(),HttpStatus.OK);
-    }
+        List<followUpResponse> follow_up_responses=new ArrayList<>();
+        for(FollowUp followUp : followUpRepo.findAll())
+        {
+          followUpResponse follow_up_response=new followUpResponse();
+          follow_up_response.setUid(followUp.getId());
+          follow_up_response.setUser(followUp.getFollowUpBy());
+          follow_up_response.setNextCallDate(followUp.getNextCallDate());
+          follow_up_response.setDate(followUp.getDate());
+          follow_up_response.setContact(9711156783L);
+          follow_up_response.setCourse("english");
+         follow_up_response.setName("nishant");
+         follow_up_responses.add(follow_up_response);
 
-    public ResponseEntity<List<FollowUp>> getAllFollowUpFromAssignUsercode(int usercode)
+        }
+        return new ResponseEntity<>(follow_up_responses,HttpStatus.OK);
+    }
+    /*----------------------------------------------------Get all FollowUp from usercode-----------------------------------------------------------------*/
+    public ResponseEntity<List<followUpResponse>> getAllFollowUpFromAssignUsercode(int usercode)
     {
         if(userRepo.existsById(usercode))
         {
-            return new ResponseEntity<>(followUpRepo.getAllFollowUpFromUsercode(usercode) ,HttpStatus.OK);
+            List<followUpResponse> follow_up_responses=new ArrayList<>();
+            for(FollowUp followUp : followUpRepo.getAllFollowUpFromUsercode(usercode))
+            {
+                followUpResponse follow_up_response=new followUpResponse();
+                follow_up_response.setUid(followUp.getId());
+                follow_up_response.setUser(followUp.getFollowUpBy());
+                follow_up_response.setNextCallDate(followUp.getNextCallDate());
+                follow_up_response.setDate(followUp.getDate());
+                follow_up_response.setContact(9711156783L);
+                follow_up_response.setCourse("english");
+                follow_up_response.setName("nishant");
+                follow_up_responses.add(follow_up_response);
+
+            }
+            return new ResponseEntity<>(follow_up_responses,HttpStatus.OK);
         }
         else{
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-    }
+    }/*----------------------------------------------------Get a Follow Up-----------------------------------------------------------------*/
 
     public ResponseEntity<?> getFollowUpFromId(String uid) {
         if(followUpRepo.existsById(uid))
         {
-            return new ResponseEntity<>(followUpRepo.getById(uid), HttpStatus.OK);
+            return new ResponseEntity<>(followUpRepo.getById(uid),HttpStatus.OK);
         }
         return new ResponseEntity<>("uid does not exist by uid",HttpStatus.BAD_REQUEST);
     }
-
-
-    public ResponseEntity<?> getCountFollowUpFromLeadId(String uid) {
+    /*----------------------------------------------------Count of all FollowUp from uid-----------------------------------------------------------------*/
+    public int getCountFollowUpFromLeadId(String uid) {
         if(leadRepo.existsById(uid))
         {
-            return new ResponseEntity<>(followUpRepo.getFollowUpByLeadId(uid) , HttpStatus.OK);
+            return followUpRepo.getAllFollowUpsFromLeadId(uid);
         }
-        return new ResponseEntity<>("uid does not exist by uid",HttpStatus.BAD_REQUEST);
+        return -1;
     }
 
-
-
-
+    /*----------------------------------------------------Saving a FollowUp-----------------------------------------------------------------*/
     public ResponseEntity<String> addFollowUp(FollowUpRequest followUpRequest) {
 
-        FollowUp followUp = new FollowUp();
+        FollowUp followUp=new FollowUp();
 
         if (userRepo.existsById(followUpRequest.getUsercode())) {
 
@@ -322,10 +377,8 @@ public class LeadService {
 
         } else return new ResponseEntity<>("Invalid usercode", HttpStatus.NOT_FOUND);
 
-        if (leadRepo.existsById(followUpRequest.getLeadId())){
-            followUp.setLead(leadRepo.getById(followUpRequest.getLeadId()));
-        } else return new ResponseEntity<>("Invalid lead", HttpStatus.NOT_FOUND);
-
+        Lead lead=leadRepo.getById(followUpRequest.getLeadId());
+        followUp.setLead(lead);
         followUp.setDate(followUpRequest.getDate());
         followUp.setConversation(followUpRequest.getConversation());
         followUp.setReason(followUpRequest.getReason());
@@ -337,13 +390,7 @@ public class LeadService {
 
         return new ResponseEntity<>("FollowUp created",HttpStatus.CREATED);
     }
-
-
-
-
-
-
-
+    /*----------------------------------------------------Delete all FollowUp-----------------------------------------------------------------*/
     public ResponseEntity<String> deleteFollowUp(String id)
     {
         if(followUpRepo.existsById(id))
@@ -354,8 +401,8 @@ public class LeadService {
 
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
-
-    public ResponseEntity<String> updateFollowUp(String id, FollowUpRequest followUpRequest) {
+    /*----------------------------------------------------Updating a FollowUp-----------------------------------------------------------------*/
+    public ResponseEntity<String> updateFollowUp(String id,FollowUpRequest followUpRequest) {
         if(followUpRepo.existsById(id))
         {
             FollowUp followUp = followUpRepo.getById(id);

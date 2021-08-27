@@ -12,7 +12,7 @@ public interface FollowupRepo extends JpaRepository<FollowUp,String> {
     List<FollowUp> getAllFollowUpFromUsercode(int usercode);
 
     @Query(value = "SELECT COUNT(*) FROM follow_up WHERE lead_id=?", nativeQuery = true)
-    Integer getAllFollowUpsFromLeadId(String uid);
+    int  getAllFollowUpsFromLeadId(String uid);
 
     @Query(value = "SELECT * FROM follow_up WHERE lead_id=?", nativeQuery = true)
     List<FollowUp> getFollowUpByLeadId(String uid);
