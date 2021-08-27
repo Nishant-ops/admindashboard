@@ -3,12 +3,9 @@ package com.Alphalyte.Jwt_Admin_dashboard.Controller;
 
 import com.Alphalyte.Jwt_Admin_dashboard.Model.Lead.FollowUp;
 import com.Alphalyte.Jwt_Admin_dashboard.Model.Lead.Lead;
-import com.Alphalyte.Jwt_Admin_dashboard.Reposoritries.Lead.LeadRepo;
 import com.Alphalyte.Jwt_Admin_dashboard.Service.LeadService.LeadService;
 import com.Alphalyte.Jwt_Admin_dashboard.payload.Request.LeadForm;
-import com.Alphalyte.Jwt_Admin_dashboard.payload.Request.followUpRequest;
-import com.Alphalyte.Jwt_Admin_dashboard.payload.Response.follow_up_Response;
-import com.Alphalyte.Jwt_Admin_dashboard.payload.Response.leadResponse;
+import com.Alphalyte.Jwt_Admin_dashboard.payload.Request.FollowUpRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +26,7 @@ public class LeadMenuController {
     }
 
     @GetMapping(value = "/lead")
-    public ResponseEntity<List<leadResponse>> getAllLeads(){
+    public ResponseEntity<List<Lead>> getAllLeads(){
         return service.getAllLeads();
     }
 
@@ -55,46 +52,57 @@ public class LeadMenuController {
     }
 
     @GetMapping("/lead/assign/{usercode}")
-    public ResponseEntity<List<leadResponse>> getAllLeadsAssignToUsercode(@PathVariable("usercode") int id)
+    public ResponseEntity<List<Lead>> getAllLeadsAssignToUsercode(@PathVariable("usercode") int id)
     {
         return service.getallLeadsFromAssignUsercode(id);
     }
 
+
+
+
     @GetMapping("/lead/followUp")
-    public ResponseEntity<List<follow_up_Response>> getallFollowUps()
+    public ResponseEntity<List<FollowUp>> getallFollowUps()
     {
         return service.getAllFollowUps();
     }
 
 
     @GetMapping("/lead/followUp/{usercode}")
-    public ResponseEntity<List<follow_up_Response>> getAllFollowupsFromUsercode(@PathVariable("usercode") int usercode)
+    public ResponseEntity<List<FollowUp>> getAllFollowupsFromUsercode(@PathVariable("usercode") int usercode)
     {
         return service.getAllFollowUpFromAssignUsercode(usercode);
     }
 
-    @GetMapping("/lead/followUpBy/{id}")
+    @GetMapping("/lead/followUpById/{id}")
     public ResponseEntity<?> getFollowUpById(@PathVariable("id") String uid)
     {
         return service.getFollowUpFromId(uid);
     }
 
+    @GetMapping("/temp/{id}")
+    public ResponseEntity<?> getFollowUpByLeadId(@PathVariable("id") String uid)
+    {
+        return service.getCountFollowUpFromLeadId(uid);
+    }
+
+
     @PostMapping("/lead/followUp")
-    public ResponseEntity<String> saveFollowUp(@RequestBody followUpRequest followUpRequest)
+    public ResponseEntity<String> saveFollowUp(@RequestBody FollowUpRequest followUpRequest)
     {
         return service.addFollowUp(followUpRequest);
     }
 
 
-    //TODO: check in postman
     @DeleteMapping("/lead/followUp/{id}")
     public ResponseEntity<String> deleteFollowUp(@PathVariable("id") String id)
     {
         return service.deleteFollowUp(id);
     }
 
+
+
     @PutMapping("/lead/followUp/{id}")
-    public ResponseEntity<String> updateFollowUp(@PathVariable("id") String id , @RequestBody followUpRequest followUpRequest)
+    public ResponseEntity<String> updateFollowUp(@PathVariable("id") String id , @RequestBody FollowUpRequest followUpRequest)
     {
         return service.updateFollowUp(id,followUpRequest);
     }
