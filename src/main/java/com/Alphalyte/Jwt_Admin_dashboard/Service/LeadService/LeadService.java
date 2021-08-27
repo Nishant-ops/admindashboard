@@ -34,30 +34,89 @@ public class LeadService {
 
         user assignTo = userRepo.getById(lead.getUsercode());
 
-        Lead dblead = new Lead();
-        dblead.setName(lead.getName());
-        dblead.setGender(lead.getGender());
-        dblead.setMobile(lead.getMobile());
-        dblead.setEmail(lead.getEmail());
-        dblead.setDate(lead.getDate());
-        dblead.setAssignTo(assignTo);
-        dblead.setGuardianName(lead.getGuardianName());
-        dblead.setGuardianMobile(lead.getGuardianMobile());
-        dblead.setStatus(lead.getStatus());
-        dblead.setLeadSource(lead.getLeadSource());
-        dblead.setRemark(lead.getRemark());
-        dblead.setAddress(lead.getAddress());
-        dblead.setBoard(lead.getBoard());
-        dblead.setCity(lead.getCity());
-        dblead.setCollege(lead.getCollege());
-        dblead.setCountry(lead.getCountry());
-        dblead.setDegree(lead.getDegree());
-        dblead.setState(lead.getState());
-        dblead.setMedium(lead.getMedium());
-//        System.out.println(dblead.getId());
-        repo.save(dblead);
-        return new ResponseEntity<>("Lead saved", HttpStatus.CREATED);
-    }
+
+
+
+            Lead dblead = new Lead();
+            if(lead.getName()!=null) {
+                dblead.setName(lead.getName());
+            }else
+                return new ResponseEntity<>("Name is null",HttpStatus.BAD_REQUEST);
+
+            if(lead.getGender()!=null&&(lead.getGender().equals("Male")||lead.getGender().equals("Female"))) {
+                dblead.setGender(lead.getGender());
+            }else
+                return new ResponseEntity<>("gender cannot be Null or wrong",HttpStatus.BAD_REQUEST);
+
+            if(lead.getMobile() > 6000000000L && lead.getMobile() < 9999999999L) {
+                dblead.setMobile(lead.getMobile());
+            }else
+                return new ResponseEntity<>("Phone number is not valid",HttpStatus.BAD_REQUEST);
+
+            if(lead.getEmail()!=null) {
+                dblead.setEmail(lead.getEmail());
+            } else
+                return new ResponseEntity<>("email is null",HttpStatus.BAD_REQUEST);
+            dblead.setDate(lead.getDate());
+            dblead.setAssignTo(assignTo);
+            if(lead.getGuardianName()!=null) {
+                dblead.setGuardianName(lead.getGuardianName());
+            } else
+                return new ResponseEntity<>("guardian name cannot be null",HttpStatus.BAD_REQUEST);
+
+            if(lead.getGuardianMobile() > 6000000000L && lead.getGuardianMobile() < 9999999999L) {
+                dblead.setGuardianMobile(lead.getGuardianMobile());
+            }
+            else new ResponseEntity<>("Phone number is not valid",HttpStatus.BAD_REQUEST);
+
+            if(lead.getStatus()!=null) {
+                dblead.setStatus(lead.getStatus());
+            } else
+                return new ResponseEntity<>("status cannot be null",HttpStatus.BAD_REQUEST);
+
+            dblead.setLeadSource(lead.getLeadSource());
+            dblead.setRemark(lead.getRemark());
+
+            if(lead.getAddress()!=null) {
+                dblead.setAddress(lead.getAddress());
+            } else
+                return new ResponseEntity<>("address cannot be null",HttpStatus.BAD_REQUEST);
+
+            if(lead.getBoard()!=null) {
+                dblead.setBoard(lead.getBoard());
+            } else
+                return new ResponseEntity<>("Board cannot be null",HttpStatus.BAD_REQUEST);
+
+            if(lead.getCity()!=null) {
+                dblead.setCity(lead.getCity());
+            } else
+                return new ResponseEntity<>("City cannot be null",HttpStatus.BAD_REQUEST);
+
+            if(lead.getCollege()!=null) {
+                dblead.setCollege(lead.getCollege());
+            } else
+                return new ResponseEntity<>("College cannot be null",HttpStatus.BAD_REQUEST);
+
+            if(lead.getCountry()!=null) {
+                dblead.setCountry(lead.getCountry());
+            } else
+                return new ResponseEntity<>("Country cannot be null",HttpStatus.BAD_REQUEST);
+
+            if(lead.getDegree()!=null) {
+                dblead.setDegree(lead.getDegree());
+            } else
+                return new ResponseEntity<>("Degree cannot be null",HttpStatus.BAD_REQUEST);
+
+            if(lead.getState()!=null) {
+                dblead.setState(lead.getState());
+            } else
+                return new ResponseEntity<>("state cannot be null",HttpStatus.BAD_REQUEST);
+
+            dblead.setMedium(lead.getMedium());
+
+            repo.save(dblead);
+            return new ResponseEntity<>("Lead saved", HttpStatus.CREATED);
+        }
 
 
     public ResponseEntity<List<Lead>> getAllLeads(){
@@ -83,33 +142,85 @@ public class LeadService {
 
             user assignTo = userRepo.getById(lead.getUsercode());
 
-            if(lead.getName()!=null) {
-                dblead.setName(lead.getName());
-            }else
-                return new ResponseEntity<>("name is cannot be null",HttpStatus.BAD_REQUEST);
 
-            if(lead.getGender()!=null && (lead.getGender().equals("Male")||lead.getGender().equals("Female"))) {
-                dblead.setGender(lead.getGender());
-            }else
-                return new ResponseEntity<>("gender is null or not correct",HttpStatus.BAD_REQUEST);
+                if(lead.getName()!=null) {
+                    dblead.setName(lead.getName());
+                }else
+                    return new ResponseEntity<>("Name is null",HttpStatus.BAD_REQUEST);
 
-            dblead.setMobile(lead.getMobile());
-            dblead.setEmail(lead.getEmail());
-            dblead.setDate(lead.getDate());
-            dblead.setAssignTo(assignTo);
-            dblead.setGuardianName(lead.getGuardianName());
-            dblead.setGuardianMobile(lead.getGuardianMobile());
-            dblead.setStatus(lead.getStatus());
-            dblead.setLeadSource(lead.getLeadSource());
-            dblead.setRemark(lead.getRemark());
-            dblead.setAddress(lead.getAddress());
-            dblead.setBoard(lead.getBoard());
-            dblead.setCity(lead.getCity());
-            dblead.setCollege(lead.getCollege());
-            dblead.setCountry(lead.getCountry());
-            dblead.setDegree(lead.getDegree());
-            dblead.setState(lead.getState());
-            dblead.setMedium(lead.getMedium());
+                if(lead.getGender()!=null&&(lead.getGender().equals("Male")||lead.getGender().equals("Female"))) {
+                    dblead.setGender(lead.getGender());
+                }else
+                    return new ResponseEntity<>("gender cannot be Null or wrong",HttpStatus.BAD_REQUEST);
+
+                if(lead.getMobile() > 6000000000L && lead.getMobile() < 9999999999L) {
+                    dblead.setMobile(lead.getMobile());
+                }else
+                    return new ResponseEntity<>("Phone number is not valid",HttpStatus.BAD_REQUEST);
+
+                if(lead.getEmail()!=null) {
+                    dblead.setEmail(lead.getEmail());
+                } else
+                    return new ResponseEntity<>("email is null",HttpStatus.BAD_REQUEST);
+                dblead.setDate(lead.getDate());
+                dblead.setAssignTo(assignTo);
+                if(lead.getGuardianName()!=null) {
+                    dblead.setGuardianName(lead.getGuardianName());
+                } else
+                    return new ResponseEntity<>("guardian name cannot be null",HttpStatus.BAD_REQUEST);
+
+                if(lead.getGuardianMobile() > 6000000000L && lead.getGuardianMobile() < 9999999999L) {
+                    dblead.setGuardianMobile(lead.getGuardianMobile());
+                }
+                else new ResponseEntity<>("Phone number is not valid",HttpStatus.BAD_REQUEST);
+
+                if(lead.getStatus()!=null) {
+                    dblead.setStatus(lead.getStatus());
+                } else
+                    return new ResponseEntity<>("status cannot be null",HttpStatus.BAD_REQUEST);
+
+                dblead.setLeadSource(lead.getLeadSource());
+                dblead.setRemark(lead.getRemark());
+
+                if(lead.getAddress()!=null) {
+                    dblead.setAddress(lead.getAddress());
+                } else
+                    return new ResponseEntity<>("address cannot be null",HttpStatus.BAD_REQUEST);
+
+                if(lead.getBoard()!=null) {
+                    dblead.setBoard(lead.getBoard());
+                } else
+                    return new ResponseEntity<>("Board cannot be null",HttpStatus.BAD_REQUEST);
+
+                if(lead.getCity()!=null) {
+                    dblead.setCity(lead.getCity());
+                } else
+                    return new ResponseEntity<>("City cannot be null",HttpStatus.BAD_REQUEST);
+
+                if(lead.getCollege()!=null) {
+                    dblead.setCollege(lead.getCollege());
+                } else
+                    return new ResponseEntity<>("College cannot be null",HttpStatus.BAD_REQUEST);
+
+                if(lead.getCountry()!=null) {
+                    dblead.setCountry(lead.getCountry());
+                } else
+                    return new ResponseEntity<>("Country cannot be null",HttpStatus.BAD_REQUEST);
+
+                if(lead.getDegree()!=null) {
+                    dblead.setDegree(lead.getDegree());
+                } else
+                    return new ResponseEntity<>("Degree cannot be null",HttpStatus.BAD_REQUEST);
+
+                if(lead.getState()!=null) {
+                    dblead.setState(lead.getState());
+                } else
+                    return new ResponseEntity<>("state cannot be null",HttpStatus.BAD_REQUEST);
+
+                dblead.setMedium(lead.getMedium());
+
+
+
 
             repo.save(dblead);
 
@@ -175,6 +286,15 @@ public class LeadService {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
+    public ResponseEntity<?> getFollowUpFromid(String uid) {
+        if(followUpRepo.existsById(uid))
+        {
+            return new ResponseEntity<>(followUpRepo.getById(uid),HttpStatus.OK);
+        }
+        return new ResponseEntity<>("uid does not exist by uid",HttpStatus.BAD_REQUEST);
+    }
+
     public ResponseEntity<String> savefollowup(followUpRequest followUpRequest) {
 
         user assignTo=userRepo.getById(followUpRequest.getUsercode());
@@ -219,4 +339,7 @@ public class LeadService {
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
+
+
+
 }//end class

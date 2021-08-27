@@ -1,6 +1,7 @@
 package com.Alphalyte.Jwt_Admin_dashboard.Model.Lead;
 
 import com.Alphalyte.Jwt_Admin_dashboard.Model.User.user;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,6 +18,7 @@ import java.time.LocalDate;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class FollowUp {
     @Id
     @GeneratedValue(generator = "UUID")

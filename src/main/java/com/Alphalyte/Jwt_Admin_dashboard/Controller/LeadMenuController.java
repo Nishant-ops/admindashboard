@@ -64,10 +64,17 @@ public class LeadMenuController {
         return service.getallFollowUps();
     }
 
+
     @GetMapping("/lead/followUp/{usercode}")
     public ResponseEntity<List<FollowUp>> getallFollowupsFromUsercode(@PathVariable("usercode") int usercode)
     {
         return service.getallFollowUpFromAssignUsercode(usercode);
+    }
+
+    @GetMapping("/lead/followUp/{id}")
+    public ResponseEntity<?> getFollowUpById(@PathVariable("id") String uid)
+    {
+        return service.getFollowUpFromid(uid);
     }
     @PostMapping("/lead/followUp")
     public ResponseEntity<String> saveFollowUp(@RequestBody followUpRequest followUpRequest)
@@ -88,4 +95,17 @@ public class LeadMenuController {
     {
         return service.updateFollowUp(id,followUpRequest);
     }
+    @DeleteMapping("/lead/followUp/{id}")
+    public ResponseEntity<String> delteById(@PathVariable("id") String id)
+    {
+        return service.deteleFollowup(id);
+    }
+
+    @PutMapping("/lead/followUp/{id}")
+    public ResponseEntity<String> FollowUpate(@PathVariable("id") String uid,
+                                              @RequestBody followUpRequest followUpRequest)
+    {
+        return service.updateFollowUp(uid,followUpRequest);
+    }
+
 }
