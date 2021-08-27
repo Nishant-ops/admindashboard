@@ -1,7 +1,6 @@
 package com.Alphalyte.Jwt_Admin_dashboard.Reposoritries.Lead;
 
 import com.Alphalyte.Jwt_Admin_dashboard.Model.Lead.Lead;
-import com.Alphalyte.Jwt_Admin_dashboard.payload.Response.leadResponse;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
