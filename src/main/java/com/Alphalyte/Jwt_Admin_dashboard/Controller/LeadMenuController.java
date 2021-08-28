@@ -18,6 +18,7 @@ public class LeadMenuController {
     @Autowired
     LeadService service;
 
+
 /*----------------------------------------------------Saving a lead-----------------------------------------------------------------*/
     @PostMapping(value = "/lead")
     public ResponseEntity<String> saveLead(@RequestBody LeadForm lead){
