@@ -48,7 +48,7 @@ public class Client {
     @OneToMany(cascade = CascadeType.MERGE)
     private List<Project> project;
 
-    @OneToMany(cascade = CascadeType.MERGE)
+    @OneToMany(cascade = CascadeType.REMOVE)
     private List<Note> notes;
     private String status;
     private String address;

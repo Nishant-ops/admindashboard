@@ -173,6 +173,28 @@ public class ClientService {
         else return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
+    /****************************************  GET CLIENT BY ID********************************************/
+
+    @Transactional
+    public ResponseEntity<String> deleteClient(long id){
+        if (clientRepository.existsById(id)){
+            List<Project> projects = clientRepository.getById(id).getProject();
+            for (Project project : projects){
+                project.setClientId(null);
+            }
+
+            clientRepository.getById(id)
+                    .setProject(null);
+
+            clientRepository.deleteById(id);
+
+            return new ResponseEntity<>("Deleted", HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>("Not found", HttpStatus.NOT_FOUND);
+    }
+
+
 
     /****************************************  SET STATUS *************************************************/
 
@@ -190,12 +212,18 @@ public class ClientService {
         return new ResponseEntity<>("Bad request", HttpStatus.BAD_REQUEST);
     }
 
-    /****************************************  GET ALL CLIENTS  *************************************************/
+    /****************************************  GET ALL CLIENTS W/ filter  *************************************************/
 
-    public Page<Client> getAllClients(int offset, int pageSize, String field){
+    public Page<Client> getAllClientsWithFilter(int offset, int pageSize, String field){
         return clientRepository.findAll(PageRequest.of(offset, pageSize).withSort(Sort.by(field)));
     }
 
+
+    /****************************************  GET ALL CLIENTS W/O filter ************************************************/
+
+    public Page<Client> getAllClientsWithoutFilter(int offset, int pageSize){
+        return clientRepository.findAll(PageRequest.of(offset, pageSize));
+    }
 
     /****************************************  ADD NOTE  *************************************************/
 

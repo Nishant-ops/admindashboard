@@ -60,6 +60,14 @@ public class CRMController {
     }
 
 
+    /****************************************  DELETE CLIENT BY ID  ******************************************/
+
+    @DeleteMapping(value = "/client/{id}")
+    public ResponseEntity<String> deleteClientById(@PathVariable long id){
+        return clientService.deleteClient(id);
+    }
+
+
     /****************************************  CLIENT FULL VIEW  ******************************************/
 
     @GetMapping(value = "/clientFullView/{id}")
@@ -83,7 +91,7 @@ public class CRMController {
         return clientService.addNote(id, note);
     }
 
-    /****************************************  ADD NOTE TO CLIENT  ***************************************/
+    /****************************************  DELETE NOTE FROM CLIENT  ***************************************/
 
     @DeleteMapping(value = "/client/{clientId}/{noteId}")
     public ResponseEntity<String> deleteNoteFromClient(@PathVariable("clientId") long clientId,@PathVariable("noteId") long noteId){
@@ -92,29 +100,18 @@ public class CRMController {
 
 
 
-
-
-
-    /****************************************  TEMPORARY  *************************************************/
-
-
-    @PostMapping(value = "/tempClient")
-    public ResponseEntity<String> bulkEntries(@RequestBody List<Client> clients){
-        for (Client c: clients) {
-            clientRepository.save(c);
-        }
-        return new ResponseEntity<>("Done", HttpStatus.CREATED);
-    }
-
-
-
-
-
     /****************************************  PAGINATION AND SORTING  *************************************/
 
     @GetMapping(value = "/client/{offset}/{size}/{field}" )
     public Page<Client> getAllClients( @PathVariable("offset") int offset, @PathVariable("size") int pageSize, @PathVariable("field") String field){
-        return clientService.getAllClients(offset, pageSize, field);
+        return clientService.getAllClientsWithFilter(offset, pageSize, field);
+    }
+
+    /****************************************  PAGINATION AND SORTING  *************************************/
+
+    @GetMapping(value = "/client/{offset}/{size}" )
+    public Page<Client> getAllClients( @PathVariable("offset") int offset, @PathVariable("size") int pageSize){
+        return clientService.getAllClientsWithoutFilter(offset, pageSize);
     }
 
 
