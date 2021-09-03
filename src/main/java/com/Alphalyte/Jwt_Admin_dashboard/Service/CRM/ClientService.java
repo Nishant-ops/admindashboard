@@ -7,23 +7,24 @@ import com.Alphalyte.Jwt_Admin_dashboard.Model.User.user;
 import com.Alphalyte.Jwt_Admin_dashboard.Reposoritries.CRM.ClientRepository;
 import com.Alphalyte.Jwt_Admin_dashboard.Reposoritries.CRM.NotesRepository;
 import com.Alphalyte.Jwt_Admin_dashboard.Reposoritries.CRM.ProjectRepository;
-import com.Alphalyte.Jwt_Admin_dashboard.Reposoritries.User.UserRepository;
 import com.Alphalyte.Jwt_Admin_dashboard.payload.Request.ClientRequest;
 import com.Alphalyte.Jwt_Admin_dashboard.payload.Request.NoteRequest;
 import com.Alphalyte.Jwt_Admin_dashboard.payload.Response.ClientFullView;
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.security.PublicKey;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -50,7 +51,7 @@ public class ClientService {
                 clientRequest.getEmail1(), clientRequest.getEmail2(), clientRequest.getAddress(), clientRequest.getCountry(), clientRequest.getState(), clientRequest.getCity(), clientRequest.getRemark(), clientRequest.getRegDate(),
                 clientRequest.getDob(), clientRequest.getGender());
 
-
+        client.setStatus("Block");
 
 
         final boolean b = !(null == file);
@@ -162,18 +163,33 @@ public class ClientService {
     }
 
 
+    /****************************************  GET CLIENT IMAGE ********************************************/
 
-    /****************************************  GET CLIENT BY ID********************************************/
+    public void getClientImage(Long id, HttpServletResponse response) throws IOException{
 
-    public ResponseEntity<Client> getClientById(long id){
         if (clientRepository.existsById(id)){
             Client client = clientRepository.getById(id);
-            return new ResponseEntity<>(client, HttpStatus.OK);
+
+            final boolean b1 = !(client.getImage() == null);
+            if (b1) {
+                byte[] bytes = new byte[client.getImage().length];
+
+                int i = 0;
+
+                for (Byte b : client.getImage()){
+                    bytes[i++] = b;
+                }
+
+                response.setContentType("image/jpeg");
+                InputStream is = new ByteArrayInputStream(bytes);
+                IOUtils.copy(is , response.getOutputStream());
+            }
         }
-        else return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    /****************************************  GET CLIENT BY ID********************************************/
+
+
+    /****************************************  DELETE BY ID********************************************/
 
     @Transactional
     public ResponseEntity<String> deleteClient(long id){

@@ -3,7 +3,6 @@ package com.Alphalyte.Jwt_Admin_dashboard.Controller;
 
 import com.Alphalyte.Jwt_Admin_dashboard.Model.CRM.Client;
 import com.Alphalyte.Jwt_Admin_dashboard.Model.CRM.Note;
-import com.Alphalyte.Jwt_Admin_dashboard.Model.CRM.Project;
 import com.Alphalyte.Jwt_Admin_dashboard.Reposoritries.CRM.ClientRepository;
 import com.Alphalyte.Jwt_Admin_dashboard.Service.CRM.ClientService;
 import com.Alphalyte.Jwt_Admin_dashboard.Service.CRM.ProjectService;
@@ -18,8 +17,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
-import java.util.List;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -52,13 +52,12 @@ public class CRMController {
     }
 
 
-    /****************************************  GET CLIENT BY ID  ******************************************/
+    /****************************************  GET CLIENT IMAGE  ******************************************/
 
-    @GetMapping(value = "/clientById/{id}")
-    public ResponseEntity<Client> getClientById(@PathVariable("id") long id){
-        return clientService.getClientById(id);
+    @GetMapping(value = "client/{id}/image")
+    public void getClientImage(@PathVariable Long id, HttpServletResponse response)throws IOException{
+        clientService.getClientImage(id, response);
     }
-
 
     /****************************************  DELETE CLIENT BY ID  ******************************************/
 
@@ -107,7 +106,7 @@ public class CRMController {
         return clientService.getAllClientsWithFilter(offset, pageSize, field);
     }
 
-    /****************************************  PAGINATION AND SORTING  *************************************/
+    /****************************************  PAGINATION  ************************************************/
 
     @GetMapping(value = "/client/{offset}/{size}" )
     public Page<Client> getAllClients( @PathVariable("offset") int offset, @PathVariable("size") int pageSize){

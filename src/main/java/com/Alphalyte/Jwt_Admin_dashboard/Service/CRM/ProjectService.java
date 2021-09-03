@@ -32,7 +32,7 @@ public class ProjectService {
         return new ResponseEntity<>("Saved", HttpStatus.CREATED);
     }
 
-    /****************************************  ADD PROJECT  *************************************************/
+    /****************************************  ADD FILE TO PROJECT  *****************************************/
 
     public ResponseEntity<String> addFileToProject(long id, MultipartFile file){
 
@@ -52,7 +52,25 @@ public class ProjectService {
         return new ResponseEntity<>("Bad request", HttpStatus.BAD_REQUEST);
     }
 
-    /****************************************  ADD PROJECT  *************************************************/
+
+    /****************************************  UPDATE PROJECT  *************************************************/
+
+    public ResponseEntity<String> updateProject(Long id, ProjectRequest projectRequest ){
+        if (projectRepository.existsById(id)){
+            Project project = new Project(projectRequest);
+            project.setId(id);
+            projectRepository.save(project);
+
+            return new ResponseEntity<>("updated", HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>("Not found",HttpStatus.NOT_FOUND);
+    }
+
+
+
+
+    /****************************************  DELETE PROJECT  *************************************************/
 
     @Transactional
     public ResponseEntity<String> deleteProjectById(long id){
